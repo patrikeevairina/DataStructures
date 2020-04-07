@@ -1,9 +1,12 @@
-#pragma once
+#ifndef VECTOR_H
+#define VECTOR_H
+
+#include <cstdlib>
 
 // стратегия изменения capacity
 enum class ResizeStrategy {
-	Additive,
-	Multiplicative
+    Additive,
+    Multiplicative
 };
 
 // тип значений в векторе
@@ -13,59 +16,60 @@ using ValueType = double;
 class MyVector
 {
 public:
-	MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f);
-	MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f);
-	
-	MyVector(const MyVector& copy);
-	MyVector& operator=(const MyVector& copy);
+    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
+    MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
 
-	~MyVector();
+    MyVector(const MyVector& copy);//+
+    MyVector& operator=(const MyVector& copy);
 
-	// для умненьких — реализовать конструктор и оператор для перемещения
+    ~MyVector();//+
 
-	size_t capacity() const;
-	size_t size() const;
-	float loadFactor();
+    // для умненьких — реализовать конструктор и оператор для перемещения
 
-	// доступ к элементу, 
-	// должен работать за O(1)
-	ValueType& operator[](const size_t i) const;
+    size_t capacity() const;//+
+    size_t size() const;//+
+    float loadFactor();//???
 
-	// добавить в конец,
-	// должен работать за amort(O(1))
-	void pushBack(const ValueType& value);
-	// вставить,
-	// должен работать за O(n)
-	void insert(const size_t i, const ValueType& value);	// версия для одного значения
-	void insert(const size_t i, const MyVector& value);		// версия для вектора
+    // доступ к элементу,
+    // должен работать за O(1)
+    ValueType& operator[](const size_t i) const;//+
 
-	// удалить с конца,
-	// должен работать за amort(O(1))
-	void popBack();
-	// удалить
-	// должен работать за O(n)
-	void erase(const size_t i);
-	void erase(const size_t i, const size_t len);			// удалить len элементов начиная с i
 
-	// найти элемент,
-	// должен работать за O(n)
-	// если isBegin == true, найти индекс первого элемента, равного value, иначе последнего
-	// если искомого элемента нет, вернуть -1
-	long long int find(const ValueType& value, bool isBegin = true) const;	
+    // добавить в конец,
+    // должен работать за amort(O(1))
+    void pushBack(const ValueType& value);//+
+    // вставить,
+    // должен работать за O(n)
+    void insert(const size_t i, const ValueType& value);	// версия для одного значения //+
+    void insert(const size_t i, const MyVector& value);		// версия для вектора //+
 
-	// зарезервировать память (принудительно задать capacity)
-	void reserve(const size_t capacity);
+    // удалить с конца,
+    // должен работать за amort(O(1))
+    void popBack();//+
+    // удалить
+    // должен работать за O(n)
+    void erase(const size_t i); //+
+    void erase(const size_t i, const size_t len);//+			// удалить len элементов начиная с i 
 
-	// изменить размер
-	// если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
-	// если меньше - обрезаем вектор
-	void resize(const size_t size, const ValueType = 0.0);
+    // найти элемент,
+    // должен работать за O(n)
+    // если isBegin == true, найти индекс первого элемента, равного value, иначе последнего
+    // если искомого элемента нет, вернуть -1
+    size_t find(const ValueType& value, bool isBegin = true) const; //+
 
-	// очистка вектора, без изменения capacity
-	void clear();
+    // зарезервировать память (принудительно задать capacity)
+    void reserve(const size_t capacity);//+
+
+    // изменить размер
+    // если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
+    // если меньше - обрезаем вектор
+    void resize(const size_t size, const ValueType = 0.0);
+
+    // очистка вектора, без изменения capacity
+    void clear();
 private:
-	ValueType* _data;
-	size_t _size;
-	size_t _capacity;
+    ValueType* _data;
+    size_t _size;
+    size_t _capacity;
 };
-
+#endif // VECTOR_H
