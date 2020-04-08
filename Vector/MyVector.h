@@ -1,4 +1,3 @@
-#ifndef VECTOR_H
 #define VECTOR_H
 
 #include <cstdlib>
@@ -49,7 +48,7 @@ public:
     // удалить
     // должен работать за O(n)
     void erase(const size_t i); //+
-    void erase(const size_t i, const size_t len);//+			// удалить len элементов начиная с i 
+    void erase(const size_t i, const size_t len);//+			// удалить len элементов начиная с i
 
     // найти элемент,
     // должен работать за O(n)
@@ -71,5 +70,6 @@ private:
     ValueType* _data;
     size_t _size;
     size_t _capacity;
+    float _coef;
 };
 #endif // VECTOR_H
