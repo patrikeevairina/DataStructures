@@ -297,31 +297,37 @@ void MyVector::resize(const size_t size, const ValueType value)
 {
     if (size > _size)
     {
+
         size_t oldSize = _size;
         _size = size;
+    
         if (loadFactor() > 1)
         {
+            std::cout << "loadFactor " << loadFactor() << std::endl;
             _size = oldSize;
             reserve(size * _coef);
             _size = size;
         }
+        ValueType *copy = new ValueType[oldSize];
+        memcpy(copy, this->_data, sizeof(ValueType) * oldSize);
+
+        delete[] this->_data;
+
+        _data = new ValueType[_size];
+        for (size_t i = 0; i < oldSize; i++)
+        {
+            _data[i] = copy[i];
+            std::cout << _data[i] << std::endl;
+        }
         for (size_t i = oldSize; i < _size; i++)
         {
-            this->_data[i] = value;
+            _data[i] = value;
+            std::cout << _data[i] << std::endl;
+
         }
     }
-
-    if (size == _size)
-        return;
-    if (size < _size)
-    {
-        ValueType *copy = new ValueType[size];
-        memcpy(copy, _data, sizeof(ValueType) * size);
-        delete[] this->_data;
-        this->_data = copy;
-        _size = size;
-    }
 }
+
 
 void MyVector::clear()
 {
