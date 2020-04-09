@@ -2,67 +2,57 @@
 
 #include <cassert>
 
-
-template<typename T>
-LinkedList<T>::Node::Node(const T& value, Node *next)
+LinkedList::Node::Node(const ValueType& value, Node* next)
 {
     this->value = value;
     this->next = next;
 }
-template<typename T>
-LinkedList<T>::Node::~Node(){}
 
-template<typename T>
-void LinkedList<T>::Node::insertNext(const T& value)
+LinkedList::Node::~Node()
 {
-    Node *newNode = new Node(value, this->next);
+    // ничего не удаляем, т.к. агрегация
+}
+
+void LinkedList::Node::insertNext(const ValueType& value)
+{
+    Node* newNode = new Node(value, this->next);
     this->next = newNode;
 }
 
-template<typename T>
-void LinkedList<T>::Node::removeNext()
+void LinkedList::Node::removeNext()
 {
-    Node *removeNode = this->next;
-    Node *newNext = removeNode->next;
+    Node* removeNode = this->next;
+    Node* newNext = removeNode->next;
     delete removeNode;
     this->next = newNext;
 }
 
-template<typename T>
-LinkedList<T>::LinkedList()
-    :_head(nullptr), _size(0)
+LinkedList::LinkedList()
+    : _head(nullptr), _size(0)
 {
 
 }
 
-template<typename T>
-LinkedList<T>::LinkedList(const LinkedList& copyList)
+LinkedList::LinkedList(const LinkedList& copyList)//ИСПРАВИТЬ
 {
     this->_size = copyList._size;
-    if (this->_size == 0)
-    {
-        this->_head = nullptr;
-        return;
-    }
-
     this->_head = new Node(copyList._head->value);
-    Node *currentNode = this->_head;
-    Node *currentCopyNode = copyList._head;
-
-    while (currentCopyNode->next)
+    Node *currCopy = copyList._head;
+    Node *curr = this->_head;
+    while (currCopy->next != nullptr)
     {
-        currentNode->next = new Node(currentCopyNode->value);
-        currentCopyNode = currentCopyNode->next;
-        currentNode = currentNode->next;
+        curr->next = new Node(currCopy->next->value);
+//        std::cout << currCopy->next->value << ", " ;
+        curr = curr->next;
+        currCopy = currCopy->next;
     }
 }
 
-template<typename T>
-LinkedList<T>& LinkedList<T>::operator=(const LinkedList& copyList)
+LinkedList& LinkedList::operator=(const LinkedList& copyList)
 {
-    if (this == &copyList)
+    if (this == &copyList) {
         return *this;
-
+    }
     LinkedList bufList(copyList);
     this->_size = bufList._size;
     this->_head = bufList._head;
@@ -70,21 +60,20 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList& copyList)
     return *this;
 }
 
-template<typename T>
-LinkedList<T>::LinkedList(LinkedList&& moveList) noexcept
+LinkedList::LinkedList(LinkedList&& moveList) noexcept
 {
     this->_size = moveList._size;
-    this->head = moveList._head;
+    this->_head = moveList._head;
 
     moveList._size = 0;
     moveList._head = nullptr;
 }
 
-template<typename T>
-LinkedList<T>& LinkedList<T>::operator=(LinkedList&& moveList) noexcept
+LinkedList& LinkedList::operator=(LinkedList&& moveList) noexcept
 {
-    if (this == &moveList)
+    if (this == &moveList) {
         return *this;
+    }
     forceNodeDelete(_head);
     this->_size = moveList._size;
     this->_head = moveList._head;
@@ -95,232 +84,193 @@ LinkedList<T>& LinkedList<T>::operator=(LinkedList&& moveList) noexcept
     return *this;
 }
 
-template<typename T>
-LinkedList<T>::~LinkedList()
+LinkedList::~LinkedList()
 {
     forceNodeDelete(_head);
 }
 
-template<typename T>
-T& LinkedList<T>::operator[](const size_t pos) const
+ValueType& LinkedList::operator[](const size_t pos) const
 {
     return getNode(pos)->value;
 }
 
-template<typename T>
-typename LinkedList<T>::Node* LinkedList<T>::getNode(const size_t pos) const
+LinkedList::Node* LinkedList::getNode(const size_t pos) const
 {
-    if (pos < 0)
+    if (pos < 0) {
         assert(pos < 0);
-    else if (pos >= this->_size)
+    }
+    else if (pos >= this->_size) {
         assert(pos >= this->_size);
-
-    Node *current = this->_head;
-    for (size_t i = 0; i < pos; i++)
-    {
-        current = current->next;
     }
 
-    return current;
+    Node* bufNode = this->_head;
+    for (int i = 0; i < pos; ++i) {
+        bufNode = bufNode->next;
+    }
+
+    return bufNode;
 }
 
-template<typename T>
-void LinkedList<T>::insert(const size_t pos, const T& value)
+void LinkedList::insert(const size_t pos, const ValueType& value)
 {
-    if (pos < 0)
+    if (pos < 0) {
         assert(pos < 0);
-    else if (pos > this->_size)
-        assert(pos > this->_size);
-    if (pos == 0)
-    {
-        pushFront(value);
-        return;
     }
-    else
-    {
-       Node *current = this->_head;
-       for (size_t k = 0; k < pos - 1; k++)
-       {
-          current = current->next;
-       }
-       current->insertNext(value);
-       ++_size;
+    else if (pos > this->_size) {
+        assert(pos > this->_size);
+    }
+
+    if (pos == 0) {
+        pushFront(value);
+    }
+    else {
+        Node* bufNode = this->_head;
+        for (size_t i = 0; i < pos-1; ++i) {
+            bufNode = bufNode->next;
+        }
+        bufNode->insertNext(value);
+        ++_size;
     }
 }
 
-template<typename T>
-void LinkedList<T>::insertAfterNode(Node *node, const T& value)
+void LinkedList::insertAfterNode(Node* node, const ValueType& value)
 {
     node->insertNext(value);
 }
 
-template<typename T>
-void LinkedList<T>::pushBack(const T& value)
+void LinkedList::pushBack(const ValueType& value)
 {
-    if (this->_size == 0)
-    {
+    if (_size == 0) {
         pushFront(value);
         return;
     }
-    insert(this->_size, value);
+    insert(_size, value);
 }
 
-template<typename T>
-void LinkedList<T>::pushFront(const T& value)
+void LinkedList::pushFront(const ValueType& value)
 {
-    _head = new Node(value, this->_head);
-    this->_size++;
+    _head = new Node(value, _head);
+    ++_size;
 }
 
-template<typename T>
-void LinkedList<T>::remove(const size_t pos) //норм: работает на 0, последнем элементе и всех промежуточных
+void LinkedList::remove(const size_t pos)
 {
-    if (pos < 0)
-        assert(pos < 0);
-    else if (pos >= this->_size)
-        assert(pos >= this->_size);
+    if (pos > size() - 1)
+    {
+        return;
+    }
+
     if (pos == 0)
     {
         removeFront();
-        _size--;
         return;
     }
+
     if (pos == this->_size - 1)
     {
         removeBack();
+        return;
+    }
+
+    Node *curr = getNode(pos - 1);
+    curr->removeNext();
+    return;
+}
+
+void LinkedList::removeNextNode(Node* node)
+{
+    if (node->next != nullptr)
+    {
+        node->removeNext();
         _size--;
-        return;
     }
-
-    Node *prev = getNode(pos - 1);
-    prev->removeNext();
-    _size--;
-
+    return;
 }
 
-template<typename T>
-void LinkedList<T>::removeNextNode(Node *node)//не работает (работает)
+void LinkedList::removeBack()
 {
-    node->removeNext();
-}
-
-template<typename T>
-void LinkedList<T>::removeFront()
-{
-    if (this->_size == 1)
-    {
-        delete _head;
-        return;
-    }
-    Node *current = _head;
-    current = current->next;
-    _head = current;
-}
-
-template<typename T>
-void LinkedList<T>::removeBack()
-{
-    if (this->_size == 1)
-    {
-        delete _head;
-        return;
-    }
-    Node *curr = getNode(this->_size - 2);
+    Node *curr = getNode(_size - 2);
     delete curr->next;
     curr->next = nullptr;
+    _size--;
 }
 
-template<typename T>
-size_t LinkedList<T>::findIndex(const T& value) const
+void LinkedList::removeFront()
+{
+    Node *newHead = _head->next;
+    _head = newHead;
+    _size--;
+}
+
+long long int LinkedList::findIndex(const ValueType& value) const
 {
     Node *current = _head;
-    size_t pos = 0;
-    while (current->next)
+    for (long long int i = 0; i < _size; i++)
     {
         if (current->value == value)
-            return pos;
+            return i;
         current = current->next;
-        pos++;
     }
-    if (current->value == value)
-        return pos;
-    if (pos == this->_size - 1)
-        return -1;
+    return -1;
 }
 
-template<typename T>
-typename LinkedList<T>::Node* LinkedList<T>::findNode(const T& value) const
+LinkedList::Node* LinkedList::findNode(const ValueType& value) const
 {
-    Node *current = this->_head;
-    while (current->next)
+    Node *current = _head;
+    for (long long int i = 0; i < _size; i++)
     {
         if (current->value == value)
             return current;
         current = current->next;
     }
-    if (current->value == value)
-        return current;
-    if (current->value != value)
-        assert(current->value != value);
+    return nullptr;
 }
 
-template<typename T>
-void LinkedList<T>::reverse()
+void LinkedList::reverse()
 {
-    if (this->_size == 1)
-        return;
-    Node *prev = nullptr;
+    Node *prev = NULL;
     Node *curr = _head;
     Node *next = _head->next;
-    while (next != nullptr)
+    while (next != NULL)
     {
-        curr->next = prev;
-        prev = curr;
-        curr = next;
-        next = curr->next;
+    curr->next = prev;
+    prev = curr;
+    curr = next;
+    next = curr->next;
     }
     curr->next = prev;
     _head = curr;
+
+    return;
+
 }
 
-template<typename T>
-typename LinkedList<T>::LinkedList LinkedList<T>::reverse() const
+LinkedList LinkedList::reverse1() const
 {
-    LinkedList c = new LinkedList;
-    if (this->_size == 1)
-    {
-        c._head = this->_head;
-        return c;
-    }
-    c._head = this->_head;
-    c._size = this->_size;
-    Node *prev = nullptr;
-    Node *curr = c._head;
-    Node *next = c._head->next;
-    while (next != nullptr)
-        {
-                curr->next = prev;
-                prev = curr;
-                curr = next;
-                next = curr->next;
-        }
-        curr->next = prev;
-        c._head = curr;
-    return c;
+    LinkedList l(*this);
+    l.reverse();
+
+    return LinkedList();
 }
 
-template<typename T>
-size_t LinkedList<T>::size() const
+LinkedList LinkedList::getReverseList() const
+{
+    return LinkedList();
+}
+
+size_t LinkedList::size() const
 {
     return _size;
 }
 
-template<typename T>
-void LinkedList<T>::forceNodeDelete(Node* node)
+
+void LinkedList::forceNodeDelete(Node* node)
 {
-    if (node == nullptr)
+    if (node == nullptr) {
         return;
-    Node *nextDeleteNode = node->next;
+    }
+
+    Node* nextDeleteNode = node->next;
     delete node;
     forceNodeDelete(nextDeleteNode);
 }
