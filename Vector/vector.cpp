@@ -279,3 +279,13 @@ void MyVector::clear()
     delete[] _data;
     _size = 0;
 }
+
+ValueType* MyVector::begin()
+{
+    return this->_data;
+}
+
+ValueType* MyVector::end()
+{
+    return this->_data+size();
+}
