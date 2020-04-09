@@ -1,6 +1,9 @@
+#ifndef VECTOR_H
 #define VECTOR_H
 
 #include <cstdlib>
+
+//+ значит что программа хотя бы не падает
 
 // стратегия изменения capacity
 enum class ResizeStrategy {
@@ -62,10 +65,14 @@ public:
     // изменить размер
     // если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
     // если меньше - обрезаем вектор
-    void resize(const size_t size, const ValueType = 0.0);
+    void resize(const size_t size, const ValueType value = 0.0); //+
 
     // очистка вектора, без изменения capacity
-    void clear();
+    void clear(); //+
+
+    //попытка реализовать итераторы
+    ValueType* begin(); //+
+    ValueType* end(); //+
 private:
     ValueType* _data;
     size_t _size;
