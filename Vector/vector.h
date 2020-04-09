@@ -65,7 +65,7 @@ public:
     // изменить размер
     // если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
     // если меньше - обрезаем вектор
-    void resize(const size_t size, const ValueType value = 0.0); //+
+    void resize(const size_t size, const ValueType value = 0.0); //надо починить
 
     // очистка вектора, без изменения capacity
     void clear(); //+
@@ -73,6 +73,12 @@ public:
     //попытка реализовать итераторы
     ValueType* begin(); //+
     ValueType* end(); //+
+    
+        //функция для решения задачи
+    MyVector sortedSquares(const MyVector& vec, bool SortedStrategy);
+
+    //вспомогательная функция (в худшем случае работает за О(1)  надеюсь)
+    int findFirst(bool mark, bool isBegin) const;
 private:
     ValueType* _data;
     size_t _size;
