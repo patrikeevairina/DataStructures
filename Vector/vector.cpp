@@ -326,6 +326,17 @@ void MyVector::resize(const size_t size, const ValueType value)
 
         }
     }
+
+    if (size == _size)
+        return;
+    if (size < _size)
+    {
+        ValueType *copy = new ValueType[size];
+        memcpy(copy, _data, sizeof(ValueType) * size);
+        delete[] this->_data;
+        this->_data = copy;
+        _size = size;
+    }
 }
 
 
