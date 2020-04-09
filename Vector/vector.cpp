@@ -243,3 +243,39 @@ size_t MyVector::find(const ValueType &value, bool isBegin) const
     }
     return -1;
 }
+
+void MyVector::resize(const size_t size, const ValueType value)
+{
+    if (size > _size)
+    {
+        size_t oldSize = _size;
+        _size = size;
+        if (loadFactor() > 1)
+        {
+            _size = oldSize;
+            reserve(size * _coef);
+            _size = size;
+        }
+        for (size_t i = oldSize; i < _size; i++)
+        {
+            this->_data[i] = value;
+        }
+    }
+
+    if (size == _size)
+        return;
+    if (size < _size)
+    {
+        ValueType *copy = new ValueType[size];
+        memcpy(copy, _data, sizeof(ValueType) * size);
+        delete[] this->_data;
+        this->_data = copy;
+        _size = size;
+    }
+}
+
+void MyVector::clear()
+{
+    delete[] _data;
+    _size = 0;
+}
