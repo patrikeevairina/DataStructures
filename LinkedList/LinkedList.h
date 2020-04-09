@@ -3,59 +3,74 @@
 #include <iostream>
 #include <cstdlib>
 
-template <typename T>
+using ValueType = double;
+
 class LinkedList
 {
-    struct Node
-    {
-        Node(const T& value, Node *next = nullptr);
+    // класс узла списка
+    // по своей сути, может содержать любые данные,
+    // можно реализовать и ассоциативный массив, просто добавив
+    // поле с ключем в узел и, с учетом этого, поменять методы LinkedList
+    // (доступ по ключу, поиск по ключу и т.д.)
+    struct Node {
+        Node(const ValueType& value, Node* next = nullptr);
         ~Node();
 
-        void insertNext(const T& value);
+        void insertNext(const ValueType& value);
         void removeNext();
 
-        T value;
-        Node *next;
+        ValueType value;
+        Node* next;
     };
 
-    public:
+public:
+    ////
+    LinkedList();
+    LinkedList(const LinkedList& copyList);
+    LinkedList& operator=(const LinkedList& copyList);
 
-        LinkedList();
-        LinkedList(const LinkedList& copyList);
-        LinkedList& operator=(const LinkedList& copyList);
+    LinkedList(LinkedList&& moveList) noexcept;
+    LinkedList& operator=(LinkedList&& moveList) noexcept;
 
-        LinkedList(LinkedList&& moveList) noexcept;
-        LinkedList& operator=(LinkedList&& moveList) noexcept;
+    ~LinkedList();
+    ////
 
-        ~LinkedList();
+    // доступ к значению элемента по индексу
+    ValueType& operator[](const size_t pos) const;
+    // доступ к узлу по индексу
+    LinkedList::Node* getNode(const size_t pos) const;
 
-        T& operator[](const size_t pos) const;
-        LinkedList::Node *getNode(const size_t pos) const;
+    // вставка элемента по индексу, сначала ищем, куда вставлять (О(n)), потом вставляем (O(1))
+    void insert(const size_t pos, const ValueType& value);
+    // вставка элемента после узла, (O(1))
+    static void insertAfterNode(Node* node, const ValueType& value);
+    // вставка в конец (О(n))
+    void pushBack(const ValueType& value);
+    // вставка в начало (О(1))
+    void pushFront(const ValueType& value);
 
-        void insert(const size_t pos, const T& value);//insert the element by idx
-        static void insertAfterNode(Node *node, const T& value);
-        void pushBack(const T& value);
-        void pushFront(const T& value);
+    // удаление
+    void remove(const size_t pos);
+    void removeNextNode(Node* node);
+    void removeFront();
+    void removeBack();
 
-        void remove(const size_t pos); //работает 
-        void removeNextNode(Node *node); //вроде работает
-        void removeFront(); //работает, но вынуждает реверс падать (не реверс падает) 
-        void removeBack(); //работать-то работает, но реверс все еще падает (оказалось, что просто падает:( )
+    // поиск, О(n)
+    long long int findIndex(const ValueType& value) const;
+    Node* findNode(const ValueType& value) const;
 
-        size_t findIndex(const T& value) const;
-        Node *findNode(const T& value) const;
+    // разворот списка
+    void reverse();						// изменение текущего списка
+    LinkedList reverse1() const;			// полчение нового списка (для константных объектов)// не хватило мозгов на осмысление этого метода
+    LinkedList getReverseList() const;	// чтобы неконстантный объект тоже мог возвращать новый развернутый список//на осмысление этого тоже не хватило:(
 
-        void reverse();
-        LinkedList reverse() const;
-//		LinkedList getReversedList() const;
+    size_t size() const;
+private:
+    Node*	_head;
+    size_t	_size;
 
-        size_t size() const;
-
-    private:
-        Node *_head;
-        size_t _size;
-
-        void forceNodeDelete(Node *node);
+    void forceNodeDelete(Node* node);
 };
+
 
 #endif // LINKEDLIST_H
