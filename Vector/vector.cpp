@@ -260,37 +260,37 @@ size_t MyVector::find(const ValueType &value, bool isBegin) const
     return -1;
 }
 
-int MyVector::findFirst(bool mark, bool isBegin) const //mark - первый положительный или отриц элемент, который нас интересует
-{
-    if (isBegin == true) //идем с начала, если знаем, что количество отриц элементов не больше кол-ва полож
-    {
-        for (size_t i = 0; i < size(); i++)
-        {
-            if (this->_data[i] > 0)
-            {
-                if (mark == true)
-                    return  i;
-                if (mark == false)
-                    return i - 1;
-            }
-        }
-    }
-    else //идем с конца, если количество отриц не меньше кол-ва положительных
-    {
-        for (size_t i = size() - 1; i >= 0; i--)
-        {
-            if (this->_data[i] < 0)
-            {
-                if (mark == true)
-                    return i+1;
-                if (mark == false)
-                    return i;
-            }
-        }
+// int MyVector::findFirst(bool mark, bool isBegin) const //mark - первый положительный или отриц элемент, который нас интересует
+// {
+//     if (isBegin == true) //идем с начала, если знаем, что количество отриц элементов не больше кол-ва полож
+//     {
+//         for (size_t i = 0; i < size(); i++)
+//         {
+//             if (this->_data[i] > 0)
+//             {
+//                 if (mark == true)
+//                     return  i;
+//                 if (mark == false)
+//                     return i - 1;
+//             }
+//         }
+//     }
+//     else //идем с конца, если количество отриц не меньше кол-ва положительных
+//     {
+//         for (size_t i = size() - 1; i >= 0; i--)
+//         {
+//             if (this->_data[i] < 0)
+//             {
+//                 if (mark == true)
+//                     return i+1;
+//                 if (mark == false)
+//                     return i;
+//             }
+//         }
 
-    }
-    return -1;
-}
+//     }
+//     return -1;
+// }
 
 
 void MyVector::resize(const size_t size, const ValueType value)
@@ -355,7 +355,7 @@ ValueType* MyVector::end()
 {
     return this->_data+size();
 }
-
+/* ерунда какая-то, допишу от безысходности разве что
 MyVector MyVector::sortedSquares(const MyVector &vec, bool strategy)
 {
     MyVector sorted;
@@ -412,5 +412,5 @@ MyVector MyVector::sortedSquares(const MyVector &vec, bool strategy)
     }
     return sorted;
 }
-
+*/
 
