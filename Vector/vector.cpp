@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include <cstring>
+#include <cmath>
 
 MyVector::MyVector(size_t size, ResizeStrategy, float coef)
 {
@@ -260,38 +261,6 @@ size_t MyVector::find(const ValueType &value, bool isBegin) const
     return -1;
 }
 
-// int MyVector::findFirst(bool mark, bool isBegin) const //mark - первый положительный или отриц элемент, который нас интересует
-// {
-//     if (isBegin == true) //идем с начала, если знаем, что количество отриц элементов не больше кол-ва полож
-//     {
-//         for (size_t i = 0; i < size(); i++)
-//         {
-//             if (this->_data[i] > 0)
-//             {
-//                 if (mark == true)
-//                     return  i;
-//                 if (mark == false)
-//                     return i - 1;
-//             }
-//         }
-//     }
-//     else //идем с конца, если количество отриц не меньше кол-ва положительных
-//     {
-//         for (size_t i = size() - 1; i >= 0; i--)
-//         {
-//             if (this->_data[i] < 0)
-//             {
-//                 if (mark == true)
-//                     return i+1;
-//                 if (mark == false)
-//                     return i;
-//             }
-//         }
-
-//     }
-//     return -1;
-// }
-
 
 void MyVector::resize(const size_t size, const ValueType value)
 {
@@ -300,10 +269,10 @@ void MyVector::resize(const size_t size, const ValueType value)
 
         size_t oldSize = _size;
         _size = size;
-    
+
         if (loadFactor() > 1)
         {
-            std::cout << "loadFactor " << loadFactor() << std::endl;
+//            std::cout << "loadFactor " << loadFactor() << std::endl;
             _size = oldSize;
             reserve(size * _coef);
             _size = size;
@@ -317,12 +286,12 @@ void MyVector::resize(const size_t size, const ValueType value)
         for (size_t i = 0; i < oldSize; i++)
         {
             _data[i] = copy[i];
-            std::cout << _data[i] << std::endl;
+ //           std::cout << _data[i] << std::endl;
         }
         for (size_t i = oldSize; i < _size; i++)
         {
             _data[i] = value;
-            std::cout << _data[i] << std::endl;
+ //           std::cout << _data[i] << std::endl;
 
         }
     }
@@ -336,9 +305,9 @@ void MyVector::resize(const size_t size, const ValueType value)
         delete[] this->_data;
         this->_data = copy;
         _size = size;
+        _capacity = _size;
     }
 }
-
 
 void MyVector::clear()
 {
@@ -355,62 +324,26 @@ ValueType* MyVector::end()
 {
     return this->_data+size();
 }
-/* ерунда какая-то, допишу от безысходности разве что
-MyVector MyVector::sortedSquares(const MyVector &vec, bool strategy)
+
+
+MyVector MyVector::sortedSquares(const MyVector &vec, bool SortedStrategy)
 {
-    MyVector sorted;
-    sorted._capacity = vec._capacity;
+    MyVector sorted; //возвращаемое значение
+    sorted._coef = vec._coef;
     sorted._size = vec._size;
-    sorted._data = new ValueType[sorted._size];
-    std::cout << sorted._size << " size" << std::endl;
-    int idx;
-    if (vec._data[_size/2] >= 0)
-    {
-         idx = vec.findFirst(false, false);//индекс последнего "-" элемента
-        if (idx == -1) //все эл положительные
-            idx = 0;
-    }
-    else
-    {
-         idx = vec.findFirst(true, true);//индекс первого "+" элемента
-        if (idx == -1) //все эл отрицательные
-            idx = 0;
-    }
+    sorted._capacity = vec._capacity;
+    sorted._data = new ValueType[vec._capacity];
+//буду сравнивать первое и последнее число из массива, второе и предпоследнее и тд, но это не точно
+    //возможно стоит сравнивать самое маленькое по модулю отрицательное с самым маленьким неотриц и тд, двигаясь к краям
+    //тогда придется отдельно писать функции для случаев, где все числа отриц и неотриц
 
-    //здесь будет функция на случай, если все элементы неотрицательные или отрицательные
-    //НЕ ЗАБЫТЬ НАПИСАТЬ!!!
-    //не забыть вернуть сразу же вектор, чтобы он не пошел дальше по просторам
 
-    if (vec._data[_size/2] >= 0)
-        idx++; //теперь тут точно индекс первого положительного элемента
-    if (strategy == true)
-    {
-        if (vec._data[_size/2] >= 0)
-        {
-            ValueType *copy = new ValueType[idx];//мысль такая: создать массив с отриц числами, потом при заполнении нового вектора дергать
-                                                 //значения квадратов из этого массива или из старого вектора, но начиная с idx и проверять, какое значение больше
-                                                //то есть, по идее, вектор мы сможем заполнить за _size - idx шагов по вектору (из массива отриц чисел берем значения по фикс
-                                                //индексу, то есть пройдем по нему всего 1 раз)
-            for (size_t i = 0; i < idx; i++)
-            {
-                copy[i] = vec._data[i];
-            }
-            size_t k = idx - 1; //индекс элемента из маленького созданного массива
-            for (size_t i = 0; i < sorted._size; i++)
-            {
-                if ((vec._data[i] * vec._data[i]) < (copy[k] * copy[k]))
-                {
-                    sorted._data[i] = vec._data[i] * vec._data[i];
-                }
-                else
-                {
-                    sorted._data[i] = copy[k] * copy[k];
-                    k--;
-                }
-            }
-        }
-    }
-    return sorted;
+
+
+    std::cout << "Begin" << std::endl;
+    for (ValueType *i = sorted.begin(); i < sorted.end(); i++)
+        std::cout << *i << ", ";
+    std::cout << "End" << std::endl;
+
+    return  sorted;
 }
-*/
-
