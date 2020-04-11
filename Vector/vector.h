@@ -40,6 +40,7 @@ public:
     // добавить в конец,
     // должен работать за amort(O(1))
     void pushBack(const ValueType& value);//+
+    void pushFront(const ValueType& value);
     // вставить,
     // должен работать за O(n)
     void insert(const size_t i, const ValueType& value);	// версия для одного значения //+
@@ -65,7 +66,7 @@ public:
     // изменить размер
     // если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
     // если меньше - обрезаем вектор
-    void resize(const size_t size, const ValueType value = 0.0); //надо починить //норм, заработало
+    void resize(const size_t size, const ValueType value = 0.0); //+ чето падает
 
     // очистка вектора, без изменения capacity
     void clear(); //+
@@ -73,12 +74,13 @@ public:
     //попытка реализовать итераторы
     ValueType* begin(); //+
     ValueType* end(); //+
-    
-        //функция для решения задачи
-    MyVector sortedSquares(const MyVector& vec, bool SortedStrategy);
 
-    //вспомогательная функция (в худшем случае работает за О(1)  надеюсь)
-    int findFirst(bool mark, bool isBegin) const;
+    //функция для решения задачи
+    
+    MyVector sortedSquares(const MyVector& vec, bool SortedStrategy = true);
+    MyVector sortedSquaresMin(const MyVector& vec, bool SortedStrategy);
+    MyVector sortedSquaresPlus(const MyVector& vec, bool SortedStrategy);
+
 private:
     ValueType* _data;
     size_t _size;
