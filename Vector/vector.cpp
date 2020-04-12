@@ -432,3 +432,47 @@ ValueType* MyVector::end()
 {
     return this->_data+size();
 }
+
+MyVector MyVector::sortedSquares(const MyVector &vec, bool SortedStrategy)
+{
+    MyVector *sorted = new MyVector;
+    sorted->_size = vec._size;
+    sorted->_capacity = vec._capacity;
+    sorted->_strategy = vec._strategy;
+    if (sorted->_strategy == ResizeStrategy::Additive)
+        _delta = vec._delta;
+    if (sorted->_strategy == ResizeStrategy::Multiplicative)
+        _coef = vec._coef;
+    sorted->_data = new ValueType[sorted->_capacity];
+    if (SortedStrategy == true)
+    {
+        size_t idx1 = 0;
+        size_t idx2 = vec._size - 1;
+
+        for (size_t i = 0; i < vec._size ; i++)
+        {
+ 
+            if (idx1 == idx2)
+            {
+                sorted->_data[vec._size - i - 1] = (vec._data[idx2])*(vec._data[idx2]);
+            }
+
+            if (idx1 != idx2)
+            {
+
+                if (abs(vec._data[idx1]) >= abs(vec._data[idx2]))
+                {
+                    sorted->_data[vec._size - i - 1] = vec._data[idx1]*vec._data[idx1];                  
+                    idx1++;
+                }
+                else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
+                {
+                    sorted->_data[vec._size - i - 1] = (vec._data[idx2])*(vec._data[idx2]);    
+                    idx2--;
+                }             
+            }
+        }
+    }
+    return  *sorted;
+}
+
