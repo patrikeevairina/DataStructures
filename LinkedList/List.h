@@ -1,4 +1,3 @@
-#ifndef LIST_H
 #define LIST_H
 
 #include <iostream>
@@ -29,9 +28,9 @@ public:
     ////
     List();//+
     List(const List& copyList);//+
-    List& operator=(const List& copyList);//какая-то приколюха, не работает
+    List& operator=(const List& copyList);//какая-то приколюха, не работает пока
 
-    List(List&& moveList) noexcept;
+    List(List&& moveList) noexcept;//это же для умных
     List& operator=(List&& moveList) noexcept;
 
     ~List();
@@ -43,26 +42,26 @@ public:
     List::Node* getNode(const size_t pos) const;//+
 
     // вставка элемента по индексу, сначала ищем, куда вставлять (О(n)), потом вставляем (O(1))
-    void insert(const size_t pos, const ValueType& value);//+
+    void insert(const size_t pos, const ValueType& value);//++
     // вставка элемента после узла, (O(1))
     static void insertAfterNode(Node* node, const ValueType& value);
     // вставка в конец (О(n))
-    void pushBack(const ValueType& value);
+    void pushBack(const ValueType& value);//+
     // вставка в начало (О(1))
     void pushFront(const ValueType& value);//+
 
     // удаление
-    void remove(const size_t pos);
-    void removeNextNode(Node* node);
-    void removeFront();
-    void removeBack();
+    void remove(const size_t pos);//i think it's okay but i'm not sure
+    void removeNextNode(Node* node);//it must be okay
+    void removeFront();//+
+    void removeBack();//+, but strange if _size == 1
 
     // поиск, О(n)
     long long int findIndex(const ValueType& value) const;
     Node* findNode(const ValueType& value) const;
 
     // разворот списка
-    void reverse();						// изменение текущего списка
+    void reverse();		//+				// изменение текущего списка
     List reverse1() const;			// полчение нового списка (для константных объектов)// не хватило мозгов на осмысление этого метода
     List getReverseList() const;	// чтобы неконстантный объект тоже мог возвращать новый развернутый список//на осмысление этого тоже не хватило:(
 
