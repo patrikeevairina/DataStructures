@@ -64,10 +64,14 @@ LinkedList& LinkedList::operator=(const LinkedList& copyList)//not okay
     {
         curr->next = new Node(currCopy->next->value);
         curr = curr->next;
- 
+
         currCopy = currCopy->next;
 
     }
+
+
+    return *this;
+}
 
 LinkedList::LinkedList(LinkedList&& moveList) noexcept
 {
@@ -242,10 +246,10 @@ void LinkedList::reverse()
     Node *next = _head->next;
     while (next != NULL)
     {
-    curr->next = prev;
-    prev = curr;
-    curr = next;
-    next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+        next = curr->next;
     }
     curr->next = prev;
     _head = curr;
@@ -256,15 +260,20 @@ void LinkedList::reverse()
 
 LinkedList LinkedList::reverse1() const
 {
-    LinkedList l(*this);
-    l.reverse();
+    LinkedList *l = new LinkedList;
+    *l = *this;
+    l->reverse();
 
-    return LinkedList();
+    return *l;
 }
 
-LinkedList LinkedList::getReverseList() const
+LinkedList LinkedList::getReverseList()
 {
-    return LinkedList();
+    LinkedList *l = new LinkedList;
+    *l = *this;
+    l->reverse();
+
+    return *l;
 }
 
 size_t LinkedList::size() const
