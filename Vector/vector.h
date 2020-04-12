@@ -1,9 +1,6 @@
-#ifndef VECTOR_H
 #define VECTOR_H
 
 #include <cstdlib>
-
-//+ значит что программа хотя бы не падает
 
 // стратегия изменения capacity
 enum class ResizeStrategy {
@@ -18,8 +15,8 @@ using ValueType = double;
 class MyVector
 {
 public:
-    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
-    MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
+    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f, size_t delta = 7); //+
+    MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f, size_t delta = 7); //+
 
     MyVector(const MyVector& copy);//+
     MyVector& operator=(const MyVector& copy);
@@ -76,15 +73,16 @@ public:
     ValueType* end(); //+
 
     //функция для решения задачи
-    
+
     MyVector sortedSquares(const MyVector& vec, bool SortedStrategy = true);
-    MyVector sortedSquaresMin(const MyVector& vec, bool SortedStrategy);
-    MyVector sortedSquaresPlus(const MyVector& vec, bool SortedStrategy);
+
 
 private:
     ValueType* _data;
     size_t _size;
     size_t _capacity;
-    float _coef;
+    float _coef; //for multiplicative
+    ResizeStrategy _strategy;
+    size_t _delta; //for additive
 };
 #endif // VECTOR_H
