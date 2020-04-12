@@ -63,7 +63,8 @@ public:
     // изменить размер
     // если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
     // если меньше - обрезаем вектор
-    void resize(const size_t size, const ValueType value = 0.0); //+ чето падает
+    void resize(const size_t size, const ValueType value = 0.0); //+ 
+    void frameVector();//обрезаем capacity если ее слиииишком много
 
     // очистка вектора, без изменения capacity
     void clear(); //+
