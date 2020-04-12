@@ -65,15 +65,21 @@ MyVector& MyVector::operator=(const MyVector& copy)
     }
     MyVector bufVector(copy);
     this->_size = bufVector._size;
- 
+
     this->_capacity = bufVector._capacity;
- 
+
         this->_data = new ValueType[_capacity];
     if (bufVector._data != nullptr)
         memcpy(this->_data, bufVector._data, (this->_size) * sizeof (ValueType));
     else
         this->_data = nullptr;
-    
+
+
+    std::cout << "Begin" << std::endl;
+    for (ValueType *i = bufVector.begin(); i < bufVector.end(); i++)
+        std::cout << *i << ", ";
+    std::cout << "End" << std::endl;
+
     this->_strategy = bufVector._strategy;
     if (_strategy == ResizeStrategy::Additive)
         _delta = bufVector._delta;
@@ -192,7 +198,7 @@ void MyVector::insert(const size_t i, const ValueType &value)
     this->_data = copy;
 
     _size++;
-
+    frameVector();
     return;
 }
 
@@ -240,6 +246,8 @@ void MyVector::insert(const size_t i, const MyVector &value)
     this->_data = copy;
 
     _size += value._size;
+    
+    frameVector();
 
     return;
 }
@@ -253,6 +261,7 @@ void MyVector::popBack()
     memcpy(copy, this->_data, sizeof(ValueType) * (size() - 1));
     delete[] this->_data;
     this->_data = copy;
+    frameVector();
     _size--;
 }
 
@@ -266,6 +275,7 @@ void MyVector::erase(const size_t i)
         this->_data[k] = this->_data[k+1];
     }
     _size--;
+    frameVector();
     return;
 }
 
@@ -278,6 +288,7 @@ void MyVector::erase(const size_t i, const size_t len)
         this->_data[k] = this->_data[k+len];
     }
     _size += -len;
+    frameVector();
     return;
 }
 
@@ -405,7 +416,6 @@ void MyVector::frameVector()
         }
     }
 }
-
 
 void MyVector::clear()
 {
