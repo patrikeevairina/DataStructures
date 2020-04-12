@@ -367,17 +367,17 @@ void MyVector::frameVector()
 
             if (_data != nullptr)
             {
-                ValueType *copy = new ValueType[_capacity - _delta];
+                ValueType *copy = new ValueType[_size + _delta];
                 memcpy(copy, _data, _size *sizeof (ValueType));
                 delete [] _data;
                 _data = copy;
-                _capacity = _capacity - _delta;
+                _capacity = _size + _delta;
             }
             if (_data == nullptr)
             {
                 delete [] _data;
-                _data = new ValueType[_capacity - _delta];
-                _capacity -= _delta;
+                _data = new ValueType[_size + _delta];
+                _capacity = _size + _delta;
             }
         }
         return;
