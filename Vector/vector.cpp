@@ -57,7 +57,7 @@ MyVector::MyVector(const MyVector& copy)
         _coef = copy._coef;
 }
 
-MyVector& MyVector::operator=(const MyVector& copy)//jkhgggb doesn't work 
+MyVector& MyVector::operator=(const MyVector& copy)
 {
     if (this == &copy)
     {
@@ -65,9 +65,15 @@ MyVector& MyVector::operator=(const MyVector& copy)//jkhgggb doesn't work
     }
     MyVector bufVector(copy);
     this->_size = bufVector._size;
+ 
     this->_capacity = bufVector._capacity;
-    memcpy(this->_data, copy._data, this->_size * sizeof (ValueType));
-
+ 
+        this->_data = new ValueType[_capacity];
+    if (bufVector._data != nullptr)
+        memcpy(this->_data, bufVector._data, (this->_size) * sizeof (ValueType));
+    else
+        this->_data = nullptr;
+    
     this->_strategy = bufVector._strategy;
     if (_strategy == ResizeStrategy::Additive)
         _delta = bufVector._delta;
