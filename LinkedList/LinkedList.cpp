@@ -33,12 +33,13 @@ LinkedList::LinkedList()
 
 }
 
-LinkedList::LinkedList(const LinkedList& copyList)//ИСПРАВИТЬ
+LinkedList::LinkedList(const LinkedList& copyList)//norm
 {
     this->_size = copyList._size;
     this->_head = new Node(copyList._head->value);
     Node *currCopy = copyList._head;
     Node *curr = this->_head;
+
     while (currCopy->next != nullptr)
     {
         curr->next = new Node(currCopy->next->value);
@@ -48,17 +49,25 @@ LinkedList::LinkedList(const LinkedList& copyList)//ИСПРАВИТЬ
     }
 }
 
-LinkedList& LinkedList::operator=(const LinkedList& copyList)
+LinkedList& LinkedList::operator=(const LinkedList& copyList)//not okay
 {
     if (this == &copyList) {
         return *this;
     }
     LinkedList bufList(copyList);
     this->_size = bufList._size;
-    this->_head = bufList._head;
+    this->_head = new Node(bufList._head->value);
+    Node *curr = _head;
+    Node *currCopy = bufList._head;
 
-    return *this;
-}
+    while (currCopy->next != nullptr)
+    {
+        curr->next = new Node(currCopy->next->value);
+        curr = curr->next;
+ 
+        currCopy = currCopy->next;
+
+    }
 
 LinkedList::LinkedList(LinkedList&& moveList) noexcept
 {
