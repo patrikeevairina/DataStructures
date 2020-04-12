@@ -358,6 +358,55 @@ void MyVector::resize(const size_t size, const ValueType value)
     }
 }
 
+void MyVector::frameVector()
+{
+    if (_strategy == ResizeStrategy::Additive)
+    {
+        if (loadFactor() < (float)(_capacity - _delta) / (float)(_capacity))
+        {
+
+            if (_data != nullptr)
+            {
+                ValueType *copy = new ValueType[_capacity - _delta];
+                memcpy(copy, _data, _size *sizeof (ValueType));
+                delete [] _data;
+                _data = copy;
+                _capacity = _capacity - _delta;
+            }
+            if (_data == nullptr)
+            {
+                delete [] _data;
+                _data = new ValueType[_capacity - _delta];
+                _capacity -= _delta;
+            }
+        }
+        return;
+    }
+
+    if (_strategy == ResizeStrategy::Multiplicative)
+    {
+        if (loadFactor() < 1 / (_coef * _coef))
+        {
+            if (_data != nullptr)
+            {
+                ValueType *copy = new ValueType[(size_t)((float)(_size * _coef * _coef))];
+                memcpy(copy, _data, _size *sizeof (ValueType));
+                delete [] _data;
+                _data = copy;
+                _capacity = (size_t)((float)(_size * _coef * _coef));
+            }
+            if (_data == nullptr)
+            {
+                delete [] _data;
+                _data = new ValueType[(size_t)((float)(_size * _coef * _coef))];
+                _capacity = (size_t)((float)(_size * _coef * _coef));
+            }
+            return;
+        }
+    }
+}
+
+
 void MyVector::clear()
 {
     delete[] _data;
