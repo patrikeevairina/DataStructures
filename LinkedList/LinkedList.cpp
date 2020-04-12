@@ -258,7 +258,7 @@ void LinkedList::reverse()
 
 }
 
-LinkedList LinkedList::reverse1() const
+LinkedList LinkedList::reverse() const
 {
     LinkedList *l = new LinkedList;
     *l = *this;
