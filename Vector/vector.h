@@ -75,7 +75,7 @@ public:
 
     //функция для решения задачи
 
-    MyVector sortedSquares(const MyVector& vec, bool SortedStrategy = true);
+    MyVector sortedSquares(const MyVector& vec, bool SortedStrategy = true);//по умолчанию стратегия true - по возрастанию
 
 
 private:
@@ -84,6 +84,6 @@ private:
     size_t _capacity;
     float _coef; //for multiplicative
     ResizeStrategy _strategy;
-    size_t _delta; //for additive
+    size_t _delta; //for additive (можно было бы обойтись одним _coef, но так нагляднее(надеюсь))
 };
 #endif // VECTOR_H
