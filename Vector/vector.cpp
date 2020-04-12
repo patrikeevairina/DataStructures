@@ -57,7 +57,7 @@ MyVector::MyVector(const MyVector& copy)
         _coef = copy._coef;
 }
 
-MyVector& MyVector::operator=(const MyVector& copy)
+MyVector& MyVector::operator=(const MyVector& copy)//jkhgggb doesn't work 
 {
     if (this == &copy)
     {
