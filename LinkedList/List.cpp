@@ -72,18 +72,16 @@ List& List::operator=(const List &copyList)//DONT FORGET
     }
     List bufList(copyList);
     this->_size = bufList._size;
-    this->_head = bufList._head;
-    Node *currCopy = copyList._head;
+    this->_head = new Node(bufList._head->value);
+    Node *currCopy = bufList._head;
     Node *curr = this->_head;
     while (currCopy->next != nullptr)
     {
-        pushBack(currCopy->value);
-        std::cout << curr->value << "   " << std::endl;
+        curr->next = new Node(currCopy->next->value, nullptr, curr);
         curr = curr->next;
+        currCopy = currCopy->next;
     }
-    _tail = bufList._tail;
-    std::cout << _tail->value << "   t" << std::endl;
-    curr = curr->next;
+    _tail = curr;
 
     return *this;
 
@@ -318,6 +316,24 @@ void List::reverse()
     _tail = _head;
     _head = current;
 
+}
+
+List List::reverse1() const
+{
+    List *l = new List;
+    *l = *this;
+    l->reverse();
+
+    return *l;
+}
+
+List List::getReverseList()
+{
+    List *l = new List;
+    *l = *this;
+    l->reverse();
+
+    return *l;
 }
 
 size_t List::size() const
