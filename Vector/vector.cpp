@@ -10,7 +10,10 @@ MyVector::MyVector(size_t size, ResizeStrategy ResizeStrategy, float coef)
     _capacity = 1;
     _data = new ValueType[_capacity];
     _strategy = ResizeStrategy;
-    _coef = coef;
+    if (_strategy == ResizeStrategy::Additive)
+        _coef = 7;
+    else
+        _coef = coef;
 }
 
 MyVector::MyVector(size_t size, ValueType value, ResizeStrategy ResizeStrategy, float coef)
@@ -23,7 +26,10 @@ MyVector::MyVector(size_t size, ValueType value, ResizeStrategy ResizeStrategy, 
     {
         _data[i] = value;
     }
-    _coef = coef;
+    if (_strategy == ResizeStrategy::Additive)
+        _coef = 7;
+    else
+        _coef = coef;
 }
 
 MyVector::MyVector(const MyVector& copy)
