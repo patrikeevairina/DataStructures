@@ -1,11 +1,19 @@
+#ifndef VECTOR_H
 #define VECTOR_H
 
 #include <cstdlib>
+
 
 // стратегия изменения capacity
 enum class ResizeStrategy {
     Additive,
     Multiplicative
+};
+
+enum class SortedStrategy
+{
+    Increase,
+    Decrease
 };
 
 // тип значений в векторе
@@ -15,8 +23,8 @@ using ValueType = double;
 class MyVector
 {
 public:
-    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f, size_t delta = 7); //+
-    MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f, size_t delta = 7); //+
+    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
+    MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
 
     MyVector(const MyVector& copy);//+
     MyVector& operator=(const MyVector& copy);
@@ -63,9 +71,8 @@ public:
     // изменить размер
     // если новый размер больше текущего, то новые элементы забиваются дефолтными значениями
     // если меньше - обрезаем вектор
-    void resize(const size_t size, const ValueType value = 0.0); //+ 
-    void frameVector();//обрезаем capacity если ее слиииишком много
-
+    void resize(const size_t size, const ValueType value = 0.0); //+ чето падает
+    void frameVector();
     // очистка вектора, без изменения capacity
     void clear(); //+
 
@@ -75,8 +82,7 @@ public:
 
     //функция для решения задачи
 
-    MyVector sortedSquares(const MyVector& vec, bool SortedStrategy = true);//по умолчанию стратегия true - по возрастанию
-
+    MyVector sortedSquares(const MyVector& vec, SortedStrategy = SortedStrategy::Increase);
 
 private:
     ValueType* _data;
@@ -84,6 +90,5 @@ private:
     size_t _capacity;
     float _coef; //for multiplicative
     ResizeStrategy _strategy;
-    size_t _delta; //for additive (можно было бы обойтись одним _coef, но так нагляднее(надеюсь))
 };
 #endif // VECTOR_H
