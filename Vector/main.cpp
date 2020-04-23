@@ -12,26 +12,27 @@ void printVector(MyVector &v)
     cout << "End" << endl;
 }
 
+
+
 int main()
 {
 
-    MyVector v;
-    v.insert(0,0);
-        printVector(v);
-    v.pushBack(1);
-        printVector(v);
-    v.insert(2,2);
-        printVector(v);
-    MyVector c(2,3);
-    v.insert(3,c);
-//    cout << "num1: " << v.capacity() << " " << v.size() << endl;
-    v.resize(10, 4);
-//     cout << "num2: " << v.capacity() << " " << v.size() << endl;
-    printVector(v);
-    MyVector v1;
-    v1 = v;
-    printVector(v1);
-    MyVector v2 = v;
-    printVector(v2);
+    MyVector c(5,0);
+    MyVector k ;
+    k = c;
+    MyVector p(2,1);
+
+    k.erase(1,4);
+
+    k.insert(1,p);
+    k.pushBack(2);
+    k.erase(2);
+    k.insert(k.size(), 3);
+    k.resize(15, 4);
+    cout << k.capacity() << " " << k.size() << endl;
+    k.resize(5);
+    cout << k.capacity() << " " << k.size() << endl;
+    c = k.sortedSquares(k);
+    printVector(c);
     return 0;
 }
