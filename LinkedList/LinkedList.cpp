@@ -266,10 +266,8 @@ void LinkedList::reverse()
 
 LinkedList LinkedList::reverse() const
 {
-    LinkedList *l = new LinkedList;
-    *l = *this;
-    l->reverse();
-    return *l;
+   LinkedList l = *this;
+   return l.getReverseList();
 }
 
 LinkedList LinkedList::getReverseList()
