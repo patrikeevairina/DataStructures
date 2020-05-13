@@ -7,13 +7,11 @@
 MyVector::MyVector(size_t size, ResizeStrategy ResizeStrategy, float coef)
 {
     _size = size;
-    _capacity = 1;
-    _data = new ValueType[_capacity];
     _strategy = ResizeStrategy;
-    if (_strategy == ResizeStrategy::Additive)
-        _coef = 7;
-    else
-        _coef = coef;
+    _capacity = (_strategy == ResizeStrategy::Multiplicative) ? (size * coef) : (size + coef);
+    _capacity = (_capacity == 0) ? 1 : _capacity;
+    _data = new ValueType[_capacity];    
+    _coef = coef;
 }
 
 MyVector::MyVector(size_t size, ValueType value, ResizeStrategy ResizeStrategy, float coef)
@@ -25,11 +23,9 @@ MyVector::MyVector(size_t size, ValueType value, ResizeStrategy ResizeStrategy, 
     for (size_t i = 0; i < _size; i++)
     {
         _data[i] = value;
+        //std::cout << _data[i] << " " << std::endl;
     }
-    if (_strategy == ResizeStrategy::Additive)
-        _coef = 7;
-    else
-        _coef = coef;
+    _coef = coef;
 }
 
 MyVector::MyVector(const MyVector& copy)
@@ -50,13 +46,8 @@ MyVector& MyVector::operator=(const MyVector& copy)
         }
         MyVector bufVector(copy);
         std::swap(this->_size, bufVector._size);
-        std::swap(this->_capacity, bufVector._capacity);
-       // this->_data = new ValueType[_capacity];
-        //if (bufVector._data != nullptr)
-           // memcpy(this->_data, bufVector._data, (this->_size) * sizeof (ValueType));
-            std::swap(_data, bufVector._data);
-        //else
-           // this->_data = nullptr;
+        std::swap(this->_capacity, bufVector._capacity);       
+        std::swap(_data, bufVector._data);
         std::swap(this->_strategy, bufVector._strategy);
         std::swap(_coef, bufVector._coef);
         return *this;
@@ -92,14 +83,14 @@ float MyVector::loadFactor()
 
 ValueType& MyVector::operator[](const size_t i)
 {
-    assert(i >= this->_size);
+    assert(i < this->_size);
     ValueType &res = _data[i];
     return res;
 }
 
 const ValueType& MyVector::operator[](const size_t i) const
 {
-    assert(i >= this->_size);
+    assert(i < this->_size);
     ValueType &res = _data[i];
     return res;
 }
@@ -125,7 +116,7 @@ void MyVector::pushBack(const ValueType &value)
     if (loadFactor() == 1)
     {
         if (_strategy == ResizeStrategy::Multiplicative)
-            reserve(_capacity * _coef);
+            reserve(_capacity * _coef * _coef);
         if (_strategy == ResizeStrategy::Additive)
             reserve(_capacity+_coef);
     }
@@ -168,23 +159,27 @@ void MyVector::insert(const size_t pos, const ValueType &value)
 
 void MyVector::insert(const size_t i, const MyVector &value)
 {
-    if (i > _size)
-        assert(i > _size);
+    assert(i < _size);
 
     if ((_size + value._size) >= _capacity)
     {
         if (_strategy == ResizeStrategy::Multiplicative)
-            reserve((_size + value._size)*_coef*_coef);
+            reserve((_size + value._size)*_coef);
         else
             reserve((_size + value._size)+_coef);
     }
+    //std::cout << "size - " << value[10] << " cap - " << _capacity << std::endl;
     for (size_t k = i; k < _size; k++)
     {
         _data[k+value._size] = _data[k];
+        //std::cout <<  _data[k+value._size] << " ";
+       // std::cout << std::endl;
     }
-    for (size_t k = i; k < value._size; k++)
+    for (size_t k = i; k < value._size+i; k++)
     {
         _data[k] = value._data[k - i];
+       //:: std::cout <<  value._size << " ";
+        //std::cout << std::endl;
     }
     _size += value._size;
     return;
@@ -217,13 +212,12 @@ void MyVector::erase(const size_t i)
 
 void MyVector::erase(const size_t i, const size_t len)
 {
-    if ((i + len) > size())
-        return;
+    assert ((i + len) <= size());
     for (size_t k = i; k < size() - len; k++)
     {
         this->_data[k] = this->_data[k+len];
     }
-    _size += -len;
+    _size -= len;
     frameVector();
     return;
 }
@@ -255,6 +249,7 @@ void MyVector::resize(const size_t size, const ValueType value)
 {
     if (size > _capacity)
     {
+        std::cout << "newCap " << size*_coef << std::endl;
         reserve(size);
         for (size_t i = _size; i < size; i++)
         {
@@ -273,7 +268,7 @@ void MyVector::resize(const size_t size, const ValueType value)
     return;
 }
 
-void MyVector::frameVector() 
+void MyVector::frameVector()
 {
     if (_strategy == ResizeStrategy::Multiplicative)
     {
@@ -327,47 +322,39 @@ ValueType* MyVector::begin()
     return this->_data;
 }
 
-ValueType* MyVector::end()
+ValueType* MyVector::end() const
 {
     return this->_data+size();
 }
 
 
-MyVector MyVector::sortedSquares(const MyVector &vec, SortedStrategy strategy) // norm
+MyVector MyVector::sortedSquares(SortedStrategy strategy) // norm
 {
-    MyVector *sorted = new MyVector;
-    sorted->_size = vec._size;
-    sorted->_capacity = vec._capacity;
-    sorted->_strategy = vec._strategy;
-    if (sorted->_strategy == ResizeStrategy::Additive)
-        _coef = vec._coef;
-    if (sorted->_strategy == ResizeStrategy::Multiplicative)
-        _coef = vec._coef;
-    sorted->_data = new ValueType[sorted->_capacity];
+    MyVector *sorted = new MyVector(*this);
     if (strategy == SortedStrategy::Increase)
     {
         size_t idx1 = 0;
-        size_t idx2 = vec._size - 1;
+        size_t idx2 = this->_size - 1;
 
-        for (size_t i = 0; i < vec._size ; i++)
+        for (size_t i = 0; i < this->_size ; i++)
         {
 
             if (idx1 == idx2)
             {
-                sorted->_data[vec._size - i - 1] = (vec._data[idx2])*(vec._data[idx2]);
+                sorted->_data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
             }
 
             if (idx1 != idx2)
             {
 
-                if (abs(vec._data[idx1]) >= abs(vec._data[idx2]))
+                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
                 {
-                    sorted->_data[vec._size - i - 1] = vec._data[idx1]*vec._data[idx1];
+                    sorted->_data[this->_size - i - 1] = this->_data[idx1]*this->_data[idx1];
                     idx1++;
                 }
                 else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
                 {
-                    sorted->_data[vec._size - i - 1] = (vec._data[idx2])*(vec._data[idx2]);
+                    sorted->_data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
                     idx2--;
                 }
             }
@@ -376,27 +363,27 @@ MyVector MyVector::sortedSquares(const MyVector &vec, SortedStrategy strategy) /
     else
     {
         size_t idx1 = 0;
-        size_t idx2 = vec._size - 1;
+        size_t idx2 = this->_size - 1;
 
-        for (size_t i = 0; i < vec._size ; i++)
+        for (size_t i = 0; i < this->_size ; i++)
         {
 
             if (idx1 == idx2)
             {
-                sorted->_data[i] = (vec._data[idx2])*(vec._data[idx2]);
+                sorted->_data[i] = (this->_data[idx2])*(this->_data[idx2]);
             }
 
             if (idx1 != idx2)
             {
 
-                if (abs(vec._data[idx1]) >= abs(vec._data[idx2]))
+                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
                 {
-                    sorted->_data[i] = vec._data[idx1]*vec._data[idx1];
+                    sorted->_data[i] = this->_data[idx1]*this->_data[idx1];
                     idx1++;
                 }
                 else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
                 {
-                    sorted->_data[i] = (vec._data[idx2])*(vec._data[idx2]);
+                    sorted->_data[i] = (this->_data[idx2])*(this->_data[idx2]);
                     idx2--;
                 }
             }
