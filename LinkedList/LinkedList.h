@@ -1,4 +1,4 @@
-#ifndef LINKEDLIST_H
+ #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 #include <iostream>
 #include <cstdlib>
@@ -22,6 +22,11 @@ class LinkedList
         ValueType value;
         Node* next;
     };
+private:
+    Node*	_head;
+    size_t	_size;
+
+    void forceNodeDelete(Node* node);
 
 public:
     ////
@@ -36,14 +41,15 @@ public:
     ////
 
     // доступ к значению элемента по индексу
-    ValueType& operator[](const size_t pos) const;
+    const ValueType& operator[](const size_t pos) const;
+    ValueType& operator[](const size_t pos);
     // доступ к узлу по индексу
     LinkedList::Node* getNode(const size_t pos) const;
 
     // вставка элемента по индексу, сначала ищем, куда вставлять (О(n)), потом вставляем (O(1))
     void insert(const size_t pos, const ValueType& value);
     // вставка элемента после узла, (O(1))
-    static void insertAfterNode(Node* node, const ValueType& value);
+    void insertAfterNode(Node* node, const ValueType& value);
     // вставка в конец (О(n))
     void pushBack(const ValueType& value);
     // вставка в начало (О(1))
@@ -61,14 +67,11 @@ public:
 
     // разворот списка
     void reverse();						// изменение текущего списка
-    LinkedList reverse() const;			// полчение нового списка (для константных объектов)//
-    LinkedList getReverseList();	// чтобы неконстантный объект тоже мог возвращать новый развернутый список//
-    size_t size() const;
-private:
-    Node*	_head;
-    size_t	_size;
+    LinkedList reverse() const;			// полчение нового списка (для константных объектов)
+    LinkedList getReverseList() ;	// чтобы неконстантный объект тоже мог возвращать новый развернутый список
 
-    void forceNodeDelete(Node* node);
+    size_t size() const;
+
 };
 
 
