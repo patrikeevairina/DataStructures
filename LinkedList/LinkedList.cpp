@@ -22,6 +22,8 @@ void LinkedList::Node::insertNext(const ValueType& value)
 void LinkedList::Node::removeNext()
 {
     Node* removeNode = this->next;
+    if (this->next == nullptr)
+        return;
     Node* newNext = removeNode->next;
     delete removeNode;
     this->next = newNext;
@@ -49,13 +51,18 @@ LinkedList::LinkedList(const LinkedList& copyList)//norm
     }
 }
 
-LinkedList& LinkedList::operator=(const LinkedList& copyList)//not okay
+LinkedList& LinkedList::operator=(const LinkedList& copyList)//okay
 {
     if (this == &copyList) {
         return *this;
     }
     LinkedList bufList(copyList);
     this->_size = bufList._size;
+    if (this->_head != nullptr)
+    {
+        forceNodeDelete(_head);
+        delete _head;
+    }
     this->_head = new Node(bufList._head->value);
     Node *curr = _head;
     Node *currCopy = bufList._head;
@@ -64,9 +71,7 @@ LinkedList& LinkedList::operator=(const LinkedList& copyList)//not okay
     {
         curr->next = new Node(currCopy->next->value);
         curr = curr->next;
-
         currCopy = currCopy->next;
-
     }
 
 
@@ -102,7 +107,12 @@ LinkedList::~LinkedList()
     forceNodeDelete(_head);
 }
 
-ValueType& LinkedList::operator[](const size_t pos) const
+const ValueType& LinkedList::operator[](const size_t pos) const
+{
+    return getNode(pos)->value;
+}
+
+ValueType& LinkedList::operator[](const size_t pos)
 {
     return getNode(pos)->value;
 }
@@ -117,7 +127,7 @@ LinkedList::Node* LinkedList::getNode(const size_t pos) const
     }
 
     Node* bufNode = this->_head;
-    for (int i = 0; i < pos; ++i) {
+    for (size_t i = 0; i < pos; ++i) {
         bufNode = bufNode->next;
     }
 
@@ -126,12 +136,7 @@ LinkedList::Node* LinkedList::getNode(const size_t pos) const
 
 void LinkedList::insert(const size_t pos, const ValueType& value)
 {
-    if (pos < 0) {
-        assert(pos < 0);
-    }
-    else if (pos > this->_size) {
-        assert(pos > this->_size);
-    }
+    assert(pos <= _size);
 
     if (pos == 0) {
         pushFront(value);
@@ -148,7 +153,8 @@ void LinkedList::insert(const size_t pos, const ValueType& value)
 
 void LinkedList::insertAfterNode(Node* node, const ValueType& value)
 {
-    node->insertNext(value);
+    node->insertNext(value);    
+    _size++;
 }
 
 void LinkedList::pushBack(const ValueType& value)
@@ -263,7 +269,6 @@ LinkedList LinkedList::reverse() const
     LinkedList *l = new LinkedList;
     *l = *this;
     l->reverse();
-
     return *l;
 }
 
@@ -272,7 +277,6 @@ LinkedList LinkedList::getReverseList()
     LinkedList *l = new LinkedList;
     *l = *this;
     l->reverse();
-
     return *l;
 }
 
