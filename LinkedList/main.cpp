@@ -4,27 +4,33 @@
 
 using namespace std;
 
-void printList(LinkedList &c)
+void printList(const LinkedList &c)
 {
     cout << "begin" << endl;
     for (size_t i = 0; i < c.size(); i++)
-        cout << c[i] << endl;
+        cout << c[i] << " ";
     cout << " end!" << endl;
 }
 
 int main()
 {
+    LinkedList v;
+
     LinkedList c;
-    c.insert(0,1);
-    c.insert(1,2);
-    c.insert(2,3);
-    c.insert(3,4);
-    c.insert(4,5);
+    for (size_t i = 0; i < 10; i++)
+    {
+        c.insert(i,i);
+    }
+    printList(c);
 
-    LinkedList c1 = c;
+    for (size_t i = 0; i < 11; i++)
+    {
+        v.insert(i,10 - i);
 
-    printList(c1);
+    }
+    printList(v);
 
-    cout << "ok ";
+    c = v;
+    printList(c);
     return 0;
 }
