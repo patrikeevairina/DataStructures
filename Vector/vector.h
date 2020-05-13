@@ -78,11 +78,11 @@ public:
 
     //попытка реализовать итераторы
     ValueType* begin(); //+
-    ValueType* end(); //+
+    ValueType* end() const; //+
 
     //функция для решения задачи
 
-    MyVector sortedSquares(const MyVector& vec, SortedStrategy = SortedStrategy::Increase);
+    MyVector sortedSquares(SortedStrategy = SortedStrategy::Increase);
 
 private:
     ValueType* _data;
@@ -92,3 +92,4 @@ private:
     ResizeStrategy _strategy;
 };
 #endif // VECTOR_H
+
