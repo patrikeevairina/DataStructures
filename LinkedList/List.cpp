@@ -7,6 +7,14 @@ List::Node::Node(const ValueType& value, Node *next, Node *previous)
     this->value = value;
     this->next = next;
     this->previous = previous;
+    //std::cout << "god" << std::endl;
+    //delete previous->next;
+    if (previous != nullptr)
+        previous->next = this;
+    //delete next->previous;
+    if (next != nullptr)
+        next->previous = this;
+    //std::cout << "god" << std::endl;
 }
 
 List::Node::~Node()
@@ -16,22 +24,24 @@ List::Node::~Node()
 
 void List::Node::insertNext(const ValueType &value)//not sure
 {
-    Node *newNode = new Node(value, this->next, this);
-    this->next = newNode;
-    newNode->previous = this;
+    if (this->next != nullptr)
+        Node *newNode = new Node(value, this->next, this);
+    else
+    {
+        Node *newNode = new Node(value, nullptr, this);
+    }
 
 }
 
 void List::Node::removeNext()
 {
-    if (this->next != nullptr)
-    {
-        Node *removeNode = this->next;
-        Node *newNext = this->next->next;
-        newNext->previous = this;
-        delete[] removeNode;
-        this->next = newNext;
-    }
+    Node* removeNode = this->next;
+    if (this->next == nullptr)
+        return;
+    Node* newNext = removeNode->next;
+    delete removeNode;
+    this->next = newNext;
+    newNext->previous = this;
 }
 
 List::List()
@@ -42,15 +52,13 @@ List::List()
 
 List::List(const List& copyList)
 {
+    //std::cout << "start copy" << std::endl;
     this->_size = copyList._size;
     this->_head = new Node(copyList._head->value, nullptr, nullptr);
-    if (_size > 1)
-    {
-        this->_tail = new Node(copyList._tail->value, nullptr, nullptr);
-    }
-    else
+    if (_size < 2)
     {
         this->_tail = this->_head;
+        return;
     }
 
     Node *currCopy = copyList._head;
@@ -61,7 +69,10 @@ List::List(const List& copyList)
         curr = curr->next;
         currCopy = currCopy->next;
     }
-    curr->next = this->_tail;
+    //std::cout << currCopy->next->value << std::endl;
+    _tail = new Node(currCopy->next->value, nullptr, curr);
+    //_tail = curr->next;
+    std::cout << _tail->value << std::endl;
 }
 
 List& List::operator=(const List &copyList)//DONT FORGET
@@ -72,6 +83,14 @@ List& List::operator=(const List &copyList)//DONT FORGET
     }
     List bufList(copyList);
     this->_size = bufList._size;
+    if (_head != nullptr)
+    {
+        //std::cout << "stranna" << std::endl;
+        //std::cout << _head->value << " " << _tail->value << std::endl;
+        forceNodeDelete(_head);
+        delete _head;
+    }
+    //std::cout << "now ok" << std::endl;
     this->_head = new Node(bufList._head->value);
     Node *currCopy = bufList._head;
     Node *curr = this->_head;
@@ -92,187 +111,194 @@ List::~List()
     forceNodeDelete(_head);
 }
 
-ValueType& List::operator[](const size_t pos) const
+ValueType& List::operator[](const size_t pos)
+{
+    return getNode(pos)->value;
+}
+
+const ValueType& List::operator[](const size_t pos) const
 {
     return getNode(pos)->value;
 }
 
 List::Node* List::getNode(const size_t pos) const //working
 {
-    if (pos < 0)
+    try
     {
-        assert(pos < 0);
-    }
-    else if (pos >= this->_size)
-    {
-        assert(pos >= this->_size);
-    }
-
-    Node *current;
-    if (pos < _size / 2)
-    {
-        current = _head;
-        for (size_t i = 0; i < pos; i++)
+        if (pos >= _size)
+            throw std::out_of_range("error");
+        Node *current;
+        if (pos < _size / 2)
         {
-            current = current->next;
+            current = _head;
+            for (size_t i = 0; i < pos; i++)
+            {
+                current = current->next;
+            }
         }
-    }
-    else
-    {
-        current = _tail;
-        for (size_t k = _size - 1; k > pos; k--)
+        else
         {
-            current = current->previous;
+            current = _tail;
+            for (size_t k = _size - 1; k > pos; k--)
+            {
+                current = current->previous;
+            }
         }
+        return current;
     }
-
-    return current;
+    catch(std::out_of_range &e)
+    {
+        std::cout << "incorrect idx" << std::endl;
+    }
 }
 
 void List::insert(const size_t pos, const ValueType &value)
 {
-    if (pos < 0)
+    try
     {
-        assert(pos < 0);
+        if (pos > _size)
+            throw std::out_of_range("error");
+        if (pos == 0)
+        {
+            pushFront(value);
+            return;
+        }
+        else if (pos == _size)
+        {
+            pushBack(value);
+            return;
+        }
+        else
+        {
+            Node *node = getNode(pos - 1);
+            node->insertNext(value);
+            _size++;
+            return;
+        }
     }
-    else if (pos > this->_size)
+    catch(std::out_of_range &e)
     {
-        assert(pos > this->_size);
+        std::cout << "incorrect index" << std::endl;
     }
-
-    if (pos == 0)
-    {
-        pushFront(value);
-    }
-    else if (pos == _size)
-    {
-        pushBack(value);
-    }
-    else
-    {
-        Node *neigh1 = getNode(pos - 1);
-        Node *neigh2 = getNode(pos);
-        Node *newNode = new Node(value, neigh2, neigh1);
-        neigh1->next = newNode;
-        neigh2->previous = newNode;
-        _size++;
-    }
-
 }
 
-void List::pushFront(const ValueType &value)//working
+void List::pushFront(const ValueType &value)//вроде заработало
 {
+    if (_head == nullptr)
+    {
+        //std::cout << "list empty" << std::endl;
+        Node *newHead = new Node(value, 0, 0);
+        _head = newHead;
+        _tail = _head;
+        //std::cout << _size << std::endl;
+        _size++;
+        return;
+    }
     Node *newHead = new Node(value, _head, nullptr);
-    if (_head != nullptr)
-    {
-        _head->previous = newHead;
-    }
     _head = newHead;
-
-    if (_tail == nullptr)
-    {
-        _tail = newHead;
-    }
     _size++;
+
 }
 
 void List::pushBack(const ValueType &value)//working
 {
-    Node *newTail = new Node(value, nullptr, _tail);
-    if (_tail != nullptr)
-    {
-        _tail->next = newTail;
-    }
-    _tail = newTail;
-
     if (_head == nullptr)
     {
-        _head = newTail;
+        //std::cout << "okey" << std::endl;
+        pushFront(value);
+        return;
     }
-
+   // std::cout << "returned from pushFront" << std::endl;
+    Node *newTail = new Node(value, nullptr, _tail);
+    _tail = newTail;
     _size++;
 }
 
 void List::insertAfterNode(Node *node, const ValueType &value)
 {
     node->insertNext(value);
+    _size++;
 }
 
-void List::removeBack()
+void List::removeBack()//работает на 1 элементе, на нескольких вроде тоже
 {
     if (_size == 1)
     {
-        forceNodeDelete(_head);
+        std::cout << "okey" << std::endl;
+        delete _head;
+        _head = nullptr;
+
         _size--;
         return;
     }
-    if (_tail == nullptr)
-        return;
 
-    Node *nd = _tail;
-    _tail = _tail->previous;
-    if (_tail != nullptr)
-    {
-        _tail->next = nullptr;
-    }
-    if (nd == _head)
-    {
-        _head = nullptr;
-    }
-    delete[] nd;
+    Node *newTail = _tail;
+    newTail = newTail->previous;
+    delete _tail;
+    _tail = newTail;
+    newTail->next = nullptr;
     _size--;
 }
 
 void List::removeFront()
 {
-    if (_size == 1)
+    try
     {
-        forceNodeDelete(_head);
-        _size--;
-        return;
-    }
-    if (_head == nullptr)
-        return;
+        if (_size == 0)
+            throw std::out_of_range("error");
+        if (_size == 1)
+        {
+            removeBack();
+            return;
+        }
 
-    Node *nd = _head;
-    _head = _head->next;
-    if (_head != nullptr)
+        Node *newHead = _head;
+        newHead = newHead->next;
+        delete _head;
+        _head = newHead;
         _head->previous = nullptr;
-    if (nd == _tail)
-    {
-        _tail = nullptr;
+        _size--;
     }
-    delete[] nd;
-    _size--;
+    catch(std::out_of_range &e)
+    {
+        std::cout << "List was empty" << std::endl;
+    }
 }
 
-void List::remove(const size_t pos)
+void List::remove(const size_t pos)//вроде ничего не ломает
 {
-    if (pos > size() - 1)
+    try
     {
-        return;
-    }
+        if (pos >= _size)
+            throw std::out_of_range("error");
+        if (pos == 0)
+        {
+            removeFront();
+            return;
+        }
+        if (pos == _size - 1)
+        {
+            removeBack();
+            return;
+        }
 
-    if (pos == 0)
-    {
-        removeFront();
-        return;
+        Node *nd = getNode(pos - 1);
+        nd->removeNext();
+        _size--;
     }
-    if (pos == _size - 1)
+    catch(std::out_of_range &e)
     {
-        removeBack();
-        return;
+        std::cout << "incorrect index" << std::endl;
     }
-
-    Node *nd = getNode(pos - 1);
-    nd->removeNext();
-    _size--;
-    return;
 }
 
 void List::removeNextNode(Node *node)
 {
-    return node->removeNext();
+    if (node->next == nullptr)
+        return;
+    node->removeNext();
+    _size--;
+    return;
 }
 
 long long int List::findIndex(const ValueType& value) const
@@ -307,6 +333,7 @@ void List::reverse()
     Node *current = _head;
     while (current != nullptr)
     {
+//        std::cout << current->value << std::endl;
         Node* temp = current->next;
         current->next = current->previous;
         current->previous = temp;
@@ -318,21 +345,16 @@ void List::reverse()
 
 }
 
-List List::reverse1() const
+List List::reverse() const
 {
-    List *l = new List;
-    *l = *this;
-    l->reverse();
-
-    return *l;
+    List l = *this;
+    return l.getReverseList();
 }
 
 List List::getReverseList()
 {
-    List *l = new List;
-    *l = *this;
+    List *l = this;
     l->reverse();
-
     return *l;
 }
 
