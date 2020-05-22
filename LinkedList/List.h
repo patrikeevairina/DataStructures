@@ -14,11 +14,11 @@ class List
     // поле с ключем в узел и, с учетом этого, поменять методы LinkedList
     // (доступ по ключу, поиск по ключу и т.д.)
     struct Node {
-        Node(const ValueType& value, Node* next = nullptr, Node *previous = nullptr);//
+        Node(const ValueType& value, Node* next = nullptr, Node *previous = nullptr);//+
         ~Node();
 
-        void insertNext(const ValueType& value);//
-        void removeNext();//
+        void insertNext(const ValueType& value);//+
+        void removeNext();//+
 
         ValueType value;
         Node* next;
@@ -26,10 +26,10 @@ class List
     };
 
 public:
-    
-    List();//
-    List(const List& copyList);//
-    List& operator=(const List& copyList);/
+    ////
+    List();//+
+    List(const List& copyList);//+
+    List& operator=(const List& copyList);//
 
 
 
@@ -37,24 +37,25 @@ public:
     ////
 
     // доступ к значению элемента по индексу
-    ValueType& operator[](const size_t pos) const;//
+    ValueType& operator[](const size_t pos);//+
+    const ValueType& operator[](const size_t pos) const;
     // доступ к узлу по индексу
-    List::Node* getNode(const size_t pos) const;//
+    List::Node* getNode(const size_t pos) const;//+
 
     // вставка элемента по индексу, сначала ищем, куда вставлять (О(n)), потом вставляем (O(1))
-    void insert(const size_t pos, const ValueType& value);//
+    void insert(const size_t pos, const ValueType& value);//++
     // вставка элемента после узла, (O(1))
-    static void insertAfterNode(Node* node, const ValueType& value);
+    void insertAfterNode(Node* node, const ValueType& value);
     // вставка в конец (О(n))
-    void pushBack(const ValueType& value);//
+    void pushBack(const ValueType& value);//+
     // вставка в начало (О(1))
-    void pushFront(const ValueType& value);//
+    void pushFront(const ValueType& value);//+
 
     // удаление
-    void remove(const size_t pos);//
-    void removeNextNode(Node* node);//
-    void removeFront();//
-    void removeBack();//
+    void remove(const size_t pos);//i think it's okay but i'm not sure
+    void removeNextNode(Node* node);//it must be okay
+    void removeFront();//+
+    void removeBack();//+, but strange if _size == 1
 
     // поиск, О(n)
     long long int findIndex(const ValueType& value) const;
@@ -62,8 +63,8 @@ public:
 
     // разворот списка
     void reverse();		//+				// изменение текущего списка
-    List reverse1() const;			// полчение нового списка (для константных объектов)// 
-    List getReverseList();	// чтобы неконстантный объект тоже мог возвращать новый развернутый список//
+    List reverse() const;			// полчение нового списка (для константных объектов)// не хватило мозгов на осмысление этого метода
+    List getReverseList();	// чтобы неконстантный объект тоже мог возвращать новый развернутый список//на осмысление этого тоже не хватило:(
 
     size_t size() const;
 private:
