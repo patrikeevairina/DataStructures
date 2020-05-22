@@ -7,14 +7,13 @@ List::Node::Node(const ValueType& value, Node *next, Node *previous)
     this->value = value;
     this->next = next;
     this->previous = previous;
-    //std::cout << "god" << std::endl;
-    //delete previous->next;
+
     if (previous != nullptr)
         previous->next = this;
-    //delete next->previous;
+
     if (next != nullptr)
         next->previous = this;
-    //std::cout << "god" << std::endl;
+
 }
 
 List::Node::~Node()
@@ -22,7 +21,7 @@ List::Node::~Node()
     //
 }
 
-void List::Node::insertNext(const ValueType &value)//not sure
+void List::Node::insertNext(const ValueType &value)
 {
     if (this->next != nullptr)
         Node *newNode = new Node(value, this->next, this);
@@ -52,7 +51,7 @@ List::List()
 
 List::List(const List& copyList)
 {
-    //std::cout << "start copy" << std::endl;
+  
     this->_size = copyList._size;
     this->_head = new Node(copyList._head->value, nullptr, nullptr);
     if (_size < 2)
@@ -69,10 +68,10 @@ List::List(const List& copyList)
         curr = curr->next;
         currCopy = currCopy->next;
     }
-    //std::cout << currCopy->next->value << std::endl;
+   
     _tail = new Node(currCopy->next->value, nullptr, curr);
-    //_tail = curr->next;
-    std::cout << _tail->value << std::endl;
+   
+    
 }
 
 List& List::operator=(const List &copyList)//DONT FORGET
@@ -85,12 +84,11 @@ List& List::operator=(const List &copyList)//DONT FORGET
     this->_size = bufList._size;
     if (_head != nullptr)
     {
-        //std::cout << "stranna" << std::endl;
-        //std::cout << _head->value << " " << _tail->value << std::endl;
+       
         forceNodeDelete(_head);
         delete _head;
     }
-    //std::cout << "now ok" << std::endl;
+
     this->_head = new Node(bufList._head->value);
     Node *currCopy = bufList._head;
     Node *curr = this->_head;
@@ -186,11 +184,10 @@ void List::pushFront(const ValueType &value)//вроде заработало
 {
     if (_head == nullptr)
     {
-        //std::cout << "list empty" << std::endl;
+        
         Node *newHead = new Node(value, 0, 0);
         _head = newHead;
         _tail = _head;
-        //std::cout << _size << std::endl;
         _size++;
         return;
     }
@@ -204,11 +201,11 @@ void List::pushBack(const ValueType &value)//working
 {
     if (_head == nullptr)
     {
-        //std::cout << "okey" << std::endl;
+       
         pushFront(value);
         return;
     }
-   // std::cout << "returned from pushFront" << std::endl;
+   
     Node *newTail = new Node(value, nullptr, _tail);
     _tail = newTail;
     _size++;
@@ -224,7 +221,7 @@ void List::removeBack()//работает на 1 элементе, на неск
 {
     if (_size == 1)
     {
-        std::cout << "okey" << std::endl;
+        
         delete _head;
         _head = nullptr;
 
