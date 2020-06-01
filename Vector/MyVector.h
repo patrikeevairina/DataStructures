@@ -440,8 +440,8 @@ template <typename ValueType>
 MyVector<ValueType> MyVector<ValueType>::sortedSquares(SortedStrategy strategy) // norm
 {
     MyVector sorted = *this;
-    if (strategy == SortedStrategy::Increase)
-    {
+   // if (strategy == SortedStrategy::Increase)
+    //{
         size_t idx1 = 0;
         size_t idx2 = this->_size - 1;
 
@@ -450,7 +450,10 @@ MyVector<ValueType> MyVector<ValueType>::sortedSquares(SortedStrategy strategy) 
 
             if (idx1 == idx2)
             {
-                sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+                if (strategy == SortedStrategy::Increase)
+                     sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+                else
+                     sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
             }
 
             if (idx1 != idx2)
@@ -458,46 +461,52 @@ MyVector<ValueType> MyVector<ValueType>::sortedSquares(SortedStrategy strategy) 
 
                 if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
                 {
-                    sorted._data[this->_size - i - 1] = this->_data[idx1]*this->_data[idx1];
+                    if (strategy == SortedStrategy::Increase)
+                        sorted._data[this->_size - i - 1] = this->_data[idx1]*this->_data[idx1];
+                    else
+                        sorted._data[i] = this->_data[idx1]*this->_data[idx1];
                     idx1++;
                 }
                 else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
                 {
-                    sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+                    if (strategy == SortedStrategy::Increase)
+                        sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+                    else
+                        sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
                     idx2--;
                 }
             }
         }
-    }
-    else
-    {
-        size_t idx1 = 0;
-        size_t idx2 = this->_size - 1;
+   // }
+   // else
+   // {
+     //   size_t idx1 = 0;
+      //  size_t idx2 = this->_size - 1;
 
-        for (size_t i = 0; i < this->_size ; i++)
-        {
+//        for (size_t i = 0; i < this->_size ; i++)
+//        {
 
-            if (idx1 == idx2)
-            {
-                sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
-            }
+//            if (idx1 == idx2)
+//            {
+//                sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+//            }
 
-            if (idx1 != idx2)
-            {
+//            if (idx1 != idx2)
+//            {
 
-                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
-                {
-                    sorted._data[i] = this->_data[idx1]*this->_data[idx1];
-                    idx1++;
-                }
-                else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
-                {
-                    sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
-                    idx2--;
-                }
-            }
-        }
-    }
+//                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
+//                {
+//                    sorted._data[i] = this->_data[idx1]*this->_data[idx1];
+//                    idx1++;
+//                }
+//                else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
+//                {
+//                    sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+//                    idx2--;
+//                }
+//            }
+//        }
+   // }
     return  sorted;
 }
 
