@@ -123,7 +123,7 @@ LinkedList<ValueType>::LinkedList(const LinkedList& copyList)//norm
     while (currCopy->next != nullptr)
     {
         curr->next = new Node(currCopy->next->value);
-//        std::cout << currCopy->next->value << ", " ;
+        //        std::cout << currCopy->next->value << ", " ;
         curr = curr->next;
         currCopy = currCopy->next;
     }
@@ -202,47 +202,47 @@ ValueType& LinkedList<ValueType>::operator[](const size_t pos)
 template <typename ValueType>
 typename LinkedList<ValueType>::Node* LinkedList<ValueType>::getNode(const size_t pos) const
 {
-        if (pos >= _size)
-            throw std::out_of_range("error");
-        Node* bufNode = this->_head;
-        for (size_t i = 0; i < pos; ++i)
-        {
-            bufNode = bufNode->next;
-        }
-        return bufNode;
+    if (pos >= _size)
+        throw std::out_of_range("error");
+    Node* bufNode = this->_head;
+    for (size_t i = 0; i < pos; ++i)
+    {
+        bufNode = bufNode->next;
+    }
+    return bufNode;
 }
 
 template <typename ValueType>
 typename LinkedList<ValueType>::Node* LinkedList<ValueType>::getNode(const size_t pos)
 {
 
-        if (pos >= _size)
-            throw std::out_of_range("error");
-        Node* bufNode = this->_head;
-        for (size_t i = 0; i < pos; ++i)
-        {
-            bufNode = bufNode->next;
-        }
-        return bufNode;
+    if (pos >= _size)
+        throw std::out_of_range("error");
+    Node* bufNode = this->_head;
+    for (size_t i = 0; i < pos; ++i)
+    {
+        bufNode = bufNode->next;
+    }
+    return bufNode;
 }
 
 
 template <typename ValueType>
 void LinkedList<ValueType>::insert(const size_t pos, const ValueType& value)
 {
-        if (pos > _size)
-            throw std::out_of_range("error");
-        if (pos == 0) {
-            pushFront(value);
+    if (pos > _size)
+        throw std::out_of_range("error");
+    if (pos == 0) {
+        pushFront(value);
+    }
+    else {
+        Node* bufNode = this->_head;
+        for (size_t i = 0; i < pos-1; ++i) {
+            bufNode = bufNode->next;
         }
-        else {
-            Node* bufNode = this->_head;
-            for (size_t i = 0; i < pos-1; ++i) {
-                bufNode = bufNode->next;
-            }
-            bufNode->insertNext(value);
-            ++_size;
-        }
+        bufNode->insertNext(value);
+        ++_size;
+    }
 }
 
 template <typename ValueType>
@@ -272,23 +272,23 @@ void LinkedList<ValueType>::pushFront(const ValueType& value)
 template <typename ValueType>
 void LinkedList<ValueType>::remove(const size_t pos)
 {
-        if (pos >= _size)
-            throw std::out_of_range("error");
-        if (pos == 0)
-        {
-            removeFront();
-            return;
-        }
-
-        if (pos == this->_size - 1)
-        {
-            removeBack();
-            return;
-        }
-
-        Node *curr = getNode(pos - 1);
-        removeNextNode(curr);
+    if (pos >= _size)
+        throw std::out_of_range("error");
+    if (pos == 0)
+    {
+        removeFront();
         return;
+    }
+
+    if (pos == this->_size - 1)
+    {
+        removeBack();
+        return;
+    }
+
+    Node *curr = getNode(pos - 1);
+    removeNextNode(curr);
+    return;
 }
 
 template <typename ValueType>
@@ -398,3 +398,4 @@ void LinkedList<ValueType>::forceNodeDelete(Node* node)
 }
 
 #endif // LINKEDLIST_H
+
