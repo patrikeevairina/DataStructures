@@ -389,7 +389,7 @@ template <typename ValueType>
 void LinkedList<ValueType>::forceNodeDelete(Node* node)
 {
     if (node == nullptr) {
-        throw std::invalid_argument;
+        return;
     }
 
     Node* nextDeleteNode = node->next;
