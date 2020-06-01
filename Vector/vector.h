@@ -1,5 +1,5 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef MYVECTOR_H
+#define MVECTOR_H
 
 #include <cstdlib>
 #include <iostream>
@@ -25,7 +25,7 @@ class MyVector
 {
 public:
     MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
-    MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
+    MyVector(size_t size, ValueType value = ValueType(), ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
 
     MyVector(const MyVector& copy);//+
     MyVector& operator=(const MyVector& copy);
@@ -81,6 +81,7 @@ public:
     ValueType* begin(); //+
     ValueType* end() const; //+
 
+
     //функция для решения задачи
 
     MyVector<ValueType> sortedSquares(SortedStrategy = SortedStrategy::Increase);
@@ -101,6 +102,11 @@ MyVector<ValueType>::MyVector(size_t size, ResizeStrategy ResizeStrategy, float 
     _capacity = (_strategy == ResizeStrategy::Multiplicative) ? (size * coef) : (size + coef);
     _capacity = (_capacity == 0) ? 1 : _capacity;
     _data = new ValueType[_capacity];
+    for (size_t i = 0; i < _size; i++)
+    {
+        _data[i] = ValueType();
+        //std::cout << _data[i] << " " << std::endl;
+    }
     _coef = coef;
 }
 
