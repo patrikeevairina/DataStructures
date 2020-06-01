@@ -140,16 +140,16 @@ template <typename ValueType>
 MyVector<ValueType>& MyVector<ValueType>::operator=(const MyVector& copy)
 {
     if (this == &copy)
-        {
-            return *this;
-        }
-        MyVector bufVector(copy);
-        std::swap(this->_size, bufVector._size);
-        std::swap(this->_capacity, bufVector._capacity);
-        std::swap(_data, bufVector._data);
-        std::swap(this->_strategy, bufVector._strategy);
-        std::swap(_coef, bufVector._coef);
+    {
         return *this;
+    }
+    MyVector bufVector(copy);
+    std::swap(this->_size, bufVector._size);
+    std::swap(this->_capacity, bufVector._capacity);
+    std::swap(_data, bufVector._data);
+    std::swap(this->_strategy, bufVector._strategy);
+    std::swap(_coef, bufVector._coef);
+    return *this;
 }
 
 template <typename ValueType>
@@ -187,19 +187,19 @@ float MyVector<ValueType>::loadFactor()
 template <typename ValueType>
 ValueType& MyVector<ValueType>::operator[](const size_t i)
 {
-        if (i >= _size)
-            throw std::out_of_range("error");
-        ValueType &res = _data[i];
-        return res;
+    if (i >= _size)
+        throw std::out_of_range("error");
+    ValueType &res = _data[i];
+    return res;
 }
 
 template <typename ValueType>
 const ValueType& MyVector<ValueType>::operator[](const size_t i) const
 {
-        if (i >= _size)
-            throw std::out_of_range("error");
-        ValueType &res = _data[i];
-        return res;
+    if (i >= _size)
+        throw std::out_of_range("error");
+    ValueType &res = _data[i];
+    return res;
 }
 
 template <typename ValueType>
@@ -238,53 +238,53 @@ void MyVector<ValueType>::pushBack(const ValueType &value)
 template <typename ValueType>
 void MyVector<ValueType>::insert(const size_t pos, const ValueType &value)
 {
-        if (pos > _size)
-            throw std::out_of_range("error");
-        if (loadFactor() >= 1)
-        {
-            if (_strategy == ResizeStrategy::Multiplicative)
-               reserve(_size * _coef *_coef);
-            if (_strategy == ResizeStrategy::Additive)
-                reserve(_capacity+_coef);
-        }
-        if (pos == _size)
-        {
-            pushBack(value);
-            return;
-        }
-
-        for (size_t i = _size; i > pos; i--)
-        {
-            _data[i] = _data[i-1];
-        }
-        _data[pos] = value;
-        _size++;
-        frameVector();
+    if (pos > _size)
+        throw std::out_of_range("error");
+    if (loadFactor() >= 1)
+    {
+        if (_strategy == ResizeStrategy::Multiplicative)
+            reserve(_size * _coef *_coef);
+        if (_strategy == ResizeStrategy::Additive)
+            reserve(_capacity+_coef);
+    }
+    if (pos == _size)
+    {
+        pushBack(value);
         return;
+    }
+
+    for (size_t i = _size; i > pos; i--)
+    {
+        _data[i] = _data[i-1];
+    }
+    _data[pos] = value;
+    _size++;
+    frameVector();
+    return;
 }
 
 template <typename ValueType>
 void MyVector<ValueType>::insert(const size_t i, const MyVector &value)
 {
-        if (i > _size)
-            throw std::out_of_range("error");
-        if ((_size + value._size) >= _capacity)
-        {
-            if (_strategy == ResizeStrategy::Multiplicative)
-                reserve((_size + value._size)*_coef);
-            else
-                reserve((_size + value._size)+_coef);
-        }
-        for (size_t k = i; k < _size; k++)
-        {
-            _data[k+value._size] = _data[k];
-        }
-        for (size_t k = i; k < value._size+i; k++)
-        {
-            _data[k] = value._data[k - i];
-        }
-        _size += value._size;
-        return;
+    if (i > _size)
+        throw std::out_of_range("error");
+    if ((_size + value._size) >= _capacity)
+    {
+        if (_strategy == ResizeStrategy::Multiplicative)
+            reserve((_size + value._size)*_coef);
+        else
+            reserve((_size + value._size)+_coef);
+    }
+    for (size_t k = i; k < _size; k++)
+    {
+        _data[k+value._size] = _data[k];
+    }
+    for (size_t k = i; k < value._size+i; k++)
+    {
+        _data[k] = value._data[k - i];
+    }
+    _size += value._size;
+    return;
 }
 
 template <typename ValueType>
@@ -292,7 +292,7 @@ void MyVector<ValueType>::popBack()
 
 {
     if (this->_data == nullptr)
-        return;
+        throw std::invalid_argument("");
 
     _data[_size - 1] = 0;
     _size--;
@@ -316,15 +316,15 @@ void MyVector<ValueType>::erase(const size_t i)
 template <typename ValueType>
 void MyVector<ValueType>::erase(const size_t i, const size_t len)
 {
-        if (i >= _size)
-            throw std::out_of_range("error");
-        for (size_t k = i; k < size() - len; k++)
-        {
-            this->_data[k] = this->_data[k+len];
-        }
-        _size -= len;
-        frameVector();
-        return;
+    if (i >= _size)
+        throw std::out_of_range("error");
+    for (size_t k = i; k < size() - len; k++)
+    {
+        this->_data[k] = this->_data[k+len];
+    }
+    _size -= len;
+    frameVector();
+    return;
 }
 
 template <typename ValueType>
@@ -440,73 +440,73 @@ template <typename ValueType>
 MyVector<ValueType> MyVector<ValueType>::sortedSquares(SortedStrategy strategy) // norm
 {
     MyVector sorted = *this;
-   // if (strategy == SortedStrategy::Increase)
+    // if (strategy == SortedStrategy::Increase)
     //{
-        size_t idx1 = 0;
-        size_t idx2 = this->_size - 1;
+    size_t idx1 = 0;
+    size_t idx2 = this->_size - 1;
 
-        for (size_t i = 0; i < this->_size ; i++)
+    for (size_t i = 0; i < this->_size ; i++)
+    {
+
+        if (idx1 == idx2)
+        {
+            if (strategy == SortedStrategy::Increase)
+                sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+            else
+                sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+        }
+
+        if (idx1 != idx2)
         {
 
-            if (idx1 == idx2)
+            if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
             {
                 if (strategy == SortedStrategy::Increase)
-                     sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+                    sorted._data[this->_size - i - 1] = this->_data[idx1]*this->_data[idx1];
                 else
-                     sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+                    sorted._data[i] = this->_data[idx1]*this->_data[idx1];
+                idx1++;
             }
-
-            if (idx1 != idx2)
+            else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
             {
-
-                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
-                {
-                    if (strategy == SortedStrategy::Increase)
-                        sorted._data[this->_size - i - 1] = this->_data[idx1]*this->_data[idx1];
-                    else
-                        sorted._data[i] = this->_data[idx1]*this->_data[idx1];
-                    idx1++;
-                }
-                else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
-                {
-                    if (strategy == SortedStrategy::Increase)
-                        sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
-                    else
-                        sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
-                    idx2--;
-                }
+                if (strategy == SortedStrategy::Increase)
+                    sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
+                else
+                    sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+                idx2--;
             }
         }
-   // }
-   // else
-   // {
-     //   size_t idx1 = 0;
-      //  size_t idx2 = this->_size - 1;
+    }
+    // }
+    // else
+    // {
+    //   size_t idx1 = 0;
+    //  size_t idx2 = this->_size - 1;
 
-//        for (size_t i = 0; i < this->_size ; i++)
-//        {
+    //        for (size_t i = 0; i < this->_size ; i++)
+    //        {
 
-//            if (idx1 == idx2)
-//            {
-//                sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
-//            }
+    //            if (idx1 == idx2)
+    //            {
+    //                sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+    //            }
 
-//            if (idx1 != idx2)
-//            {
+    //            if (idx1 != idx2)
+    //            {
 
-//                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
-//                {
-//                    sorted._data[i] = this->_data[idx1]*this->_data[idx1];
-//                    idx1++;
-//                }
-//                else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
-//                {
-//                    sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
-//                    idx2--;
-//                }
-//            }
-//        }
-   // }
+    //                if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
+    //                {
+    //                    sorted._data[i] = this->_data[idx1]*this->_data[idx1];
+    //                    idx1++;
+    //                }
+    //                else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
+    //                {
+    //                    sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
+    //                    idx2--;
+    //                }
+    //            }
+    //        }
+    // }
     return  sorted;
 }
 
