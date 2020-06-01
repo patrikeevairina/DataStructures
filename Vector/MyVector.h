@@ -187,33 +187,19 @@ float MyVector<ValueType>::loadFactor()
 template <typename ValueType>
 ValueType& MyVector<ValueType>::operator[](const size_t i)
 {
-    try
-    {
         if (i >= _size)
             throw std::out_of_range("error");
         ValueType &res = _data[i];
         return res;
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout << "incorrect idx" << std::endl;
-    }
 }
 
 template <typename ValueType>
 const ValueType& MyVector<ValueType>::operator[](const size_t i) const
 {
-    try
-    {
         if (i >= _size)
             throw std::out_of_range("error");
         ValueType &res = _data[i];
         return res;
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout << "incorrect idx" << std::endl;
-    }
 }
 
 template <typename ValueType>
@@ -252,8 +238,6 @@ void MyVector<ValueType>::pushBack(const ValueType &value)
 template <typename ValueType>
 void MyVector<ValueType>::insert(const size_t pos, const ValueType &value)
 {
-    try
-    {
         if (pos > _size)
             throw std::out_of_range("error");
         if (loadFactor() >= 1)
@@ -276,19 +260,12 @@ void MyVector<ValueType>::insert(const size_t pos, const ValueType &value)
         _data[pos] = value;
         _size++;
         frameVector();
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout<< " error:( " << std::endl;
-    }
-    return;
+        return;
 }
 
 template <typename ValueType>
 void MyVector<ValueType>::insert(const size_t i, const MyVector &value)
 {
-    try
-    {
         if (i > _size)
             throw std::out_of_range("error");
         if ((_size + value._size) >= _capacity)
@@ -307,12 +284,7 @@ void MyVector<ValueType>::insert(const size_t i, const MyVector &value)
             _data[k] = value._data[k - i];
         }
         _size += value._size;
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout<< " if there is error it means that Ira is fool again" << std::endl;
-    }
-    return;
+        return;
 }
 
 template <typename ValueType>
@@ -344,8 +316,6 @@ void MyVector<ValueType>::erase(const size_t i)
 template <typename ValueType>
 void MyVector<ValueType>::erase(const size_t i, const size_t len)
 {
-    try
-    {
         if (i >= _size)
             throw std::out_of_range("error");
         for (size_t k = i; k < size() - len; k++)
@@ -354,12 +324,7 @@ void MyVector<ValueType>::erase(const size_t i, const size_t len)
         }
         _size -= len;
         frameVector();
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout << "errrrrror" << std::endl;
-    }
-    return;
+        return;
 }
 
 template <typename ValueType>
