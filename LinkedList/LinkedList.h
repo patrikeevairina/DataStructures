@@ -230,8 +230,6 @@ typename LinkedList<ValueType>::Node* LinkedList<ValueType>::getNode(const size_
 template <typename ValueType>
 void LinkedList<ValueType>::insert(const size_t pos, const ValueType& value)
 {
-    try
-    {
         if (pos > _size)
             throw std::out_of_range("error");
         if (pos == 0) {
@@ -245,11 +243,6 @@ void LinkedList<ValueType>::insert(const size_t pos, const ValueType& value)
             bufNode->insertNext(value);
             ++_size;
         }
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout << "error" << std::endl;
-    }
 }
 
 template <typename ValueType>
@@ -279,8 +272,6 @@ void LinkedList<ValueType>::pushFront(const ValueType& value)
 template <typename ValueType>
 void LinkedList<ValueType>::remove(const size_t pos)
 {
-    try
-    {
         if (pos >= _size)
             throw std::out_of_range("error");
         if (pos == 0)
@@ -298,11 +289,6 @@ void LinkedList<ValueType>::remove(const size_t pos)
         Node *curr = getNode(pos - 1);
         removeNextNode(curr);
         return;
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout << "error" << std::endl;
-    }
 }
 
 template <typename ValueType>
@@ -403,7 +389,7 @@ template <typename ValueType>
 void LinkedList<ValueType>::forceNodeDelete(Node* node)
 {
     if (node == nullptr) {
-        return;
+        throw std::invalid_argument;
     }
 
     Node* nextDeleteNode = node->next;
