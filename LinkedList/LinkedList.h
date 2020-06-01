@@ -44,6 +44,7 @@ public:
     ValueType& operator[](const size_t pos);
     // доступ к узлу по индексу
     LinkedList::Node* getNode(const size_t pos) const;
+    LinkedList::Node* getNode(const size_t pos);
 
     // вставка элемента по индексу, сначала ищем, куда вставлять (О(n)), потом вставляем (O(1))
     void insert(const size_t pos, const ValueType& value);
@@ -139,7 +140,7 @@ LinkedList<ValueType>& LinkedList<ValueType>::operator=(const LinkedList& copyLi
     if (this->_head != nullptr)
     {
         forceNodeDelete(_head);
-        delete _head;
+        //delete _head;
     }
     this->_head = new Node(bufList._head->value);
     Node *curr = _head;
@@ -201,8 +202,6 @@ ValueType& LinkedList<ValueType>::operator[](const size_t pos)
 template <typename ValueType>
 typename LinkedList<ValueType>::Node* LinkedList<ValueType>::getNode(const size_t pos) const
 {
-    try
-    {
         if (pos >= _size)
             throw std::out_of_range("error");
         Node* bufNode = this->_head;
@@ -211,12 +210,22 @@ typename LinkedList<ValueType>::Node* LinkedList<ValueType>::getNode(const size_
             bufNode = bufNode->next;
         }
         return bufNode;
-    }
-    catch(std::out_of_range &e)
-    {
-        std::cout << "error" << std::endl;
-    }
 }
+
+template <typename ValueType>
+typename LinkedList<ValueType>::Node* LinkedList<ValueType>::getNode(const size_t pos)
+{
+
+        if (pos >= _size)
+            throw std::out_of_range("error");
+        Node* bufNode = this->_head;
+        for (size_t i = 0; i < pos; ++i)
+        {
+            bufNode = bufNode->next;
+        }
+        return bufNode;
+}
+
 
 template <typename ValueType>
 void LinkedList<ValueType>::insert(const size_t pos, const ValueType& value)
