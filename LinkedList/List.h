@@ -117,6 +117,7 @@ void List<ValueType>::Node::removeNext()
         return;
     Node* newNext = removeNode->next;
     delete removeNode;
+    removeNode = nullptr;
     this->next = newNext;
     newNext->previous = this;
 }
@@ -151,7 +152,7 @@ List<ValueType>::List(const List& copyList)
     //std::cout << currCopy->next->value << std::endl;
     _tail = new Node(currCopy->next->value, nullptr, curr);
     //_tail = curr->next;
-    std::cout << _tail->value << std::endl;
+    //std::cout << _tail->value << std::endl;
 }
 
 template <typename ValueType>
@@ -168,7 +169,7 @@ List<ValueType>& List<ValueType>::operator=(const List &copyList)//DONT FORGET
         //std::cout << "stranna" << std::endl;
         //std::cout << _head->value << " " << _tail->value << std::endl;
         forceNodeDelete(_head);
-        delete _head;
+       // delete _head;
     }
     //std::cout << "now ok" << std::endl;
     this->_head = new Node(bufList._head->value);
@@ -190,6 +191,14 @@ template <typename ValueType>
 List<ValueType>::~List()
 {
     forceNodeDelete(_head);
+    //Node *node = _head;
+   // delete _head;
+//    while (node->next)
+//    {
+//        node = node->next;
+//        delete node->previous;
+//    }
+//    delete _tail;
 }
 
 template <typename ValueType>
@@ -432,20 +441,14 @@ void List<ValueType>::reverse()
 {
     if ((_size == 1)||(_size ==0))
         return;
-
-    Node *current = _head;
-    while (current != nullptr)
+    Node *left = _head;
+    Node *right = _tail;
+    while (left != right && left->previous != right)
     {
-//        std::cout << current->value << std::endl;
-        Node* temp = current->next;
-        current->next = current->previous;
-        current->previous = temp;
-        current = temp;
+        std::swap(left->value, right->value);
+        left = left->next;
+        right = right->previous;
     }
-    current = _tail;
-    _tail = _head;
-    _head = current;
-
 }
 
 template <typename ValueType>
@@ -477,9 +480,10 @@ void List<ValueType>::forceNodeDelete(Node *node)
         return;
     }
 
-    Node* nextDeleteNode = node->next;
-    delete node;
-    forceNodeDelete(nextDeleteNode);
+    //Node* nextDeleteNode = node->next;
+    node = node->next;
+    delete node->previous;
+    forceNodeDelete(node);
 }
 
 
