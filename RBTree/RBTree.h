@@ -29,11 +29,7 @@ protected:
         Node* uncle();//
         Node* sibling();//
         //перегрузила для констр копирования
-        Node* operator=(const Node* copyNode);   
-        
-        V getValue();//не знаю, зачем-то же нам нужны узлы с макс
-        //и мин ключами
-        K getKey();//просто получение ключа по ноде
+        Node* operator=(const Node* copyNode);
         string getNodeColor();//получение цвета ноды
     };
     
@@ -48,11 +44,11 @@ public:
     void removeFirstNode(K key);//удаление первой ноды по ключу
     void removeNodesByKey(K key);//удаление всех узлов с таким ключом
     
-    //  bool findByKey(K key);//true - есть нода с таким ключом
+    bool isThereKey(K key);//true - есть нода с таким ключом
     
-    Node* findByKey(K key);//найти ноду по ключу
-    Node* findMaxKey();//
-    Node* findMinKey();//
+    Node* findNodeByKey(K key);//найти ноду по ключу
+    V findMaxKey();//
+    V findMinKey();//
     
     size_t size();//
     bool isEmpty();//
@@ -87,9 +83,10 @@ private:
     void printTree(Node *nd);//рекурсия для вывода дерева
     void removeTree(Node* nd);//рекурсия для деструктора
     void constructTree(Node* nd, Node *cp);//рекурсия для констр копирования
+    void moveTree(Node&& nd, Node&& cp);
     void removeFirstNode(K key, Node *nd);//рекурсия для удаления первой ноды с ключом key
-    //    bool findByKey(K key, Node *nd);//
-    Node* findByKey(K key, Node *nd);//рекурсия для поиска ноды
+    bool isThereKey(K key, Node *nd);//рекурсия для того чтобы понять есть ли такая нода вообще
+    Node* findNodeByKey(K key, Node *nd);//рекурсия для поиска ноды
 };
 
 template <typename V, typename K>
@@ -586,9 +583,8 @@ void RBTree<V,K>::leftRotate(Node *node)
     pin->left = node;
 }
 
-/*
 template <typename V, typename K>
-bool RBTree<V,K>::findByKey(K key)
+bool RBTree<V,K>::isThereKey(K key)
 {
     if (!_root)
         return false;
@@ -596,7 +592,7 @@ bool RBTree<V,K>::findByKey(K key)
 }
 
 template <typename V, typename K>
-bool RBTree<V,K>::findByKey(K key, Node* node)
+bool RBTree<V,K>::isThereKey(K key, Node* node)
 {
     if (node->key == key)
         return true;
@@ -611,22 +607,21 @@ bool RBTree<V,K>::findByKey(K key, Node* node)
         findByKey(key, node->right);
     }
 }
-*/
 
 template <typename V, typename K>
-typename RBTree<V,K>::Node* RBTree<V,K>::findByKey(K key)
+typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key)
 {
     if (!_root)
         return 0;
     return findByKey(key, _root);
 }
 template <typename V, typename K>
-typename RBTree<V,K>::Node* RBTree<V,K>::findByKey(K key, Node *node)
+typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key, Node *node)
 {
     if (node->key == key)
         return node;
     if (!node)
-        return 0;
+        throw std::out_of_range("there's no node with this key");
     if (node->left)
     {
         findByKey(key, node->left);
@@ -638,43 +633,31 @@ typename RBTree<V,K>::Node* RBTree<V,K>::findByKey(K key, Node *node)
 }
 
 template <typename V, typename K>
-typename RBTree<V,K>::Node* RBTree<V,K>::findMaxKey()
+V RBTree<V,K>::findMaxKey()
 {
-    if (isEmpty())
+    if (!isEmpty())
     {
         Node *node = _root;
         while (node->right)
         {
             node = node->right;
         }
-        return node;
+        return node->value;
     }
 }
 
 template <typename V, typename K>
-typename RBTree<V,K>::Node* RBTree<V,K>::findMinKey()
+V RBTree<V,K>::findMinKey()
 {
-    if (isEmpty())
+    if (!isEmpty())
     {
         Node *node = _root;
         while (node->left)
         {
             node = node->left;
         }
-        return node;
+        return node->value;
     }
-}
-
-template <typename V, typename K>
-V RBTree<V, K>::Node::getValue()
-{
-    return value;
-}
-
-template <typename V, typename K>
-K RBTree<V, K>::Node::getKey()
-{
-    return key;
 }
 
 template <typename V, typename K>
@@ -713,7 +696,7 @@ void RBTree<V,K>::printTree(Node *node)
     if (isEmpty() == false)
     {
         cout << node->value << " " << node->key << " "
-             << getNodeColor(node) << endl;
+             << node->getNodeColor() << endl;
         if (node->left)
         {
             printTree(node->left);
