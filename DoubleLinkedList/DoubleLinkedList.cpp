@@ -21,7 +21,7 @@ void DoubleLinkedList::Node::removeNext()
 {
     Node* removeNode = this->next;
     if (this->next == nullptr)
-        return;
+        throw std::invalid_argument("invalid arg");
     Node* newNext = removeNode->next;
     delete removeNode;
     this->next = newNext;
