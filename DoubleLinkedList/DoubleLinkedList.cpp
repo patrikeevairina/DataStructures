@@ -4,14 +4,10 @@
 DoubleLinkedList::Node::Node(const ValueType& value, Node *next, Node *previous)
     :value(value), previous(previous), next(next) {};
 
-
 DoubleLinkedList::Node::~Node()
-{
-    //
-}
+{}
 
-
-void DoubleLinkedList::Node::insertNext(const ValueType &value)//ATTENTION
+void DoubleLinkedList::Node::insertNext(const ValueType &value)
 {
     if (this->next != nullptr)
         Node *newNode = new Node(value, this->next, this);
@@ -19,7 +15,6 @@ void DoubleLinkedList::Node::insertNext(const ValueType &value)//ATTENTION
     {
         Node *newNode = new Node(value, nullptr, this);
     }
-
 }
 
 void DoubleLinkedList::Node::removeNext()
@@ -46,11 +41,10 @@ DoubleLinkedList::DoubleLinkedList(const DoubleLinkedList& copyList)
         return;
     }
     _head = new Node(copyList._head->value);
-
     Node* currentNode = _head;
     Node* currentCopyNode = copyList._head;
-
-    while (currentCopyNode->next) {
+    while (currentCopyNode->next) 
+    {
         currentCopyNode = currentCopyNode->next;
         currentNode->next = new Node(currentCopyNode->value, 0, currentNode);
         currentNode = currentNode->next;
@@ -58,35 +52,29 @@ DoubleLinkedList::DoubleLinkedList(const DoubleLinkedList& copyList)
     _tail = currentNode;
 }
 
-
 DoubleLinkedList& DoubleLinkedList::operator=(const DoubleLinkedList &copyList)
 {
-    if (this == &copyList) {
+    if (this == &copyList)
+    {
         return *this;
     }
     DoubleLinkedList* bufList = new DoubleLinkedList(copyList);
     forceNodeDelete(_head);
-
     this->_size = bufList->_size;
     this->_head = bufList->_head;
     this->_tail = bufList->_tail;
-
     return *this;
-
 }
-
 
 DoubleLinkedList::~DoubleLinkedList()
 {
     forceNodeDelete(_head);
 }
 
-
 ValueType& DoubleLinkedList::operator[](const size_t pos)
 {
     return getNode(pos)->value;
 }
-
 
 const ValueType& DoubleLinkedList::operator[](const size_t pos) const
 {
@@ -96,7 +84,7 @@ const ValueType& DoubleLinkedList::operator[](const size_t pos) const
 DoubleLinkedList::Node* DoubleLinkedList::getNode(const size_t pos) const //working
 {
     if (pos >= _size)
-        throw std::out_of_range("error");
+        throw std::out_of_range("out_of_range");
     Node *current;
     if (pos < _size / 2)
     {
@@ -120,7 +108,7 @@ DoubleLinkedList::Node* DoubleLinkedList::getNode(const size_t pos) const //work
 void DoubleLinkedList::insert(const size_t pos, const ValueType &value)
 {
     if (pos > _size)
-        throw std::out_of_range("error");
+        throw std::out_of_range("out_of_range");
     if (pos == 0)
     {
         pushFront(value);
@@ -140,7 +128,7 @@ void DoubleLinkedList::insert(const size_t pos, const ValueType &value)
     }
 }
 
-void DoubleLinkedList::pushFront(const ValueType &value)//вроде заработало
+void DoubleLinkedList::pushFront(const ValueType &value)
 {
     if (_head == nullptr)
     {
@@ -153,7 +141,6 @@ void DoubleLinkedList::pushFront(const ValueType &value)//вроде зараб�
     Node *newHead = new Node(value, _head, nullptr);
     _head = newHead;
     _size++;
-
 }
 
 
@@ -177,7 +164,7 @@ void DoubleLinkedList::insertAfterNode(Node *node, const ValueType &value)
 void DoubleLinkedList::removeBack()
 {
     if (_size == 0)
-        throw std::out_of_range("error");
+        throw std::out_of_range("out_of_range");
     if (_size == 1)
     {
         delete _head;
@@ -185,7 +172,6 @@ void DoubleLinkedList::removeBack()
         _size--;
         return;
     }
-
     Node *newTail = _tail;
     newTail = newTail->previous;
     delete _tail;
@@ -197,39 +183,31 @@ void DoubleLinkedList::removeBack()
 void DoubleLinkedList::removeFront()
 {
     if (_head == nullptr)
-            throw std::invalid_argument("list is empty");
-
-        Node* newHead = _head;
-        _head = _head->next;
-        delete newHead;
-        --_size;
+        throw std::invalid_argument("list is empty");
+    Node* newHead = _head;
+    _head = _head->next;
+    delete newHead;
+    --_size;
 }
 
-void DoubleLinkedList::remove(const size_t pos)//вроде ничего не ломает
+void DoubleLinkedList::remove(const size_t pos)
 {
-    try
+    if (pos >= _size)
+        throw std::out_of_range("out_of_range");
+    if (pos == 0)
     {
-        if (pos >= _size)
-            throw std::out_of_range("error");
-        if (pos == 0)
-        {
-            removeFront();
-            return;
-        }
-        if (pos == _size - 1)
-        {
-            removeBack();
-            return;
-        }
-
-        Node *nd = getNode(pos - 1);
-        nd->removeNext();
-        _size--;
+        removeFront();
+        return;
     }
-    catch(std::out_of_range &e)
+    if (pos == _size - 1)
     {
-        std::cout << "incorrect index" << std::endl;
+        removeBack();
+        return;
     }
+    
+    Node *nd = getNode(pos - 1);
+    nd->removeNext();
+    _size--;
 }
 
 void DoubleLinkedList::removeNextNode(Node *node)
@@ -269,7 +247,6 @@ void DoubleLinkedList::reverse()
 {
     if ((_size == 1)||(_size ==0))
         return;
-
     Node *current = _head;
     while (current != nullptr)
     {
@@ -281,7 +258,6 @@ void DoubleLinkedList::reverse()
     current = _tail;
     _tail = _head;
     _head = current;
-
 }
 
 DoubleLinkedList DoubleLinkedList::reverse() const
@@ -304,10 +280,9 @@ size_t DoubleLinkedList::size() const
 
 void DoubleLinkedList::forceNodeDelete(Node *node)
 {
-    if (node == nullptr) {
+    if (node == nullptr)
         return;
-    }
-
+    
     Node* nextDeleteNode = node->next;
     delete node;
     forceNodeDelete(nextDeleteNode);
