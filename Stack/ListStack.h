@@ -1,13 +1,15 @@
 #pragma once
+#include <iostream>
 
-#include "StackImplementation.h"
-class LinkedList; // меняете на include вашего листа
+using ValueType = double;
 
-// вариант с использованием ранее написанного списка и множественного наследования
-// если бы список не был реализован, то было бы наследование только от интерфейса
-// множественное наследование можно заменить на композицию
-class ListStack : public StackImplementation, public LinkedList
-{
-	// вот тут вы вступаете в дело
+class StackImplementation {
+public:
+    virtual void push(const ValueType& value) = 0;
+    virtual void pop() = 0;
+    virtual ValueType& top() = 0;
+    virtual const ValueType& top() const = 0;
+    virtual bool isEmpty() const = 0;
+    virtual size_t size() const = 0;
+    virtual ~StackImplementation() {};
 };
-
