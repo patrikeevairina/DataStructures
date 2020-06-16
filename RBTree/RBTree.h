@@ -44,8 +44,6 @@ public:
     void removeFirstNode(K key);//удаление первой ноды по ключу
     void removeNodesByKey(K key);//удаление всех узлов с таким ключом
     
-    bool isThereKey(K key);//true - есть нода с таким ключом
-    
     Node* findNodeByKey(K key);//найти ноду по ключу
     V findMaxKey();//
     V findMinKey();//
@@ -80,12 +78,11 @@ private:
     //не хотелось бы чтобы пользователь видел что
     //такая гадость имеет место быть...
     void removeNode(Node* nd);//рекурсия просто для удаления
-    void printTree(Node *nd);//рекурсия для вывода дерева
+    void printTree(Node *nd, int level);//рекурсия для вывода дерева
     void removeTree(Node* nd);//рекурсия для деструктора
     void constructTree(Node* nd, Node *cp);//рекурсия для констр копирования
     void moveTree(Node&& nd, Node&& cp);
     void removeFirstNode(K key, Node *nd);//рекурсия для удаления первой ноды с ключом key
-    bool isThereKey(K key, Node *nd);//рекурсия для того чтобы понять есть ли такая нода вообще
     Node* findNodeByKey(K key, Node *nd);//рекурсия для поиска ноды
 };
 
@@ -211,6 +208,7 @@ void RBTree<V,K>::addNode(V value, K key)
     }
     else
     {
+        _size++;
         Node *node = _root;
         for (int k = 0; k != -1; k++)
         {
@@ -220,7 +218,7 @@ void RBTree<V,K>::addNode(V value, K key)
                 {
                     node->left = new Node(value, key, 0, 0, node, Color::Red);
                     addBalance(node->left);
-                    _size++;
+                    //_size++;
                     return;
                 }
                 else
@@ -234,7 +232,7 @@ void RBTree<V,K>::addNode(V value, K key)
                 {
                     node->right = new Node(value, key, 0, 0, node, Color::Red);
                     addBalance(node->right);
-                    _size++;
+                    // _size++;
                     return;
                 }
                 else
@@ -249,11 +247,13 @@ void RBTree<V,K>::addNode(V value, K key)
 template <typename V, typename K>
 void RBTree<V,K>::addBalance(Node* node)
 {
+    // _size++;
     if (node == _root)
     {
         _root->color = Color::Black;
         return;
     }
+    
     else
         first_add_case(node);
 }
@@ -346,16 +346,18 @@ void RBTree<V,K>::removeFirstNode(K key, Node* node)
     }
     if (key == node->key)
     {
+        _size--;
         removeNode(node);
     }
+    
 }
 
 template <typename V, typename K>
 void RBTree<V,K>::removeNodesByKey(K key)
 {
-    for (int i = 0; i < _size; i++)
+    int count1 = _size;
+    for (size_t count = count1; count > 0; count--)
     {
-        cout << "ok" << endl;
         removeFirstNode(key,_root);
     }
 }
@@ -372,7 +374,7 @@ void RBTree<V, K>::removeNode(Node *node)
         else if (node->parent->right == node)
             node->parent->right = 0;
         delete node;
-        _size--;
+        // _size--;
         return;
     }
     if (!node->left)
@@ -384,7 +386,7 @@ void RBTree<V, K>::removeNode(Node *node)
         node->right = right->right;
         removeBalance(right);
         delete right;
-        _size--;
+        //_size--;
         return;
     }
     else if (!node->right)
@@ -396,7 +398,7 @@ void RBTree<V, K>::removeNode(Node *node)
         node->right = left->right;
         removeBalance(left);
         delete left;
-        _size--;
+        // _size--;
         return;
     }
     //сюда попадают узлы с 2 потомками
@@ -408,7 +410,7 @@ void RBTree<V, K>::removeNode(Node *node)
         Node* buf = n->right->right;
         removeBalance(n->right);
         delete n->right;
-        _size--;
+        // _size--;
         n->right = buf;
         return;
     }
@@ -584,36 +586,11 @@ void RBTree<V,K>::leftRotate(Node *node)
 }
 
 template <typename V, typename K>
-bool RBTree<V,K>::isThereKey(K key)
-{
-    if (!_root)
-        return false;
-    return findByKey(key, _root);
-}
-
-template <typename V, typename K>
-bool RBTree<V,K>::isThereKey(K key, Node* node)
-{
-    if (node->key == key)
-        return true;
-    if (!node)
-        return false;
-    if (node->left)
-    {
-        findByKey(key, node->left);
-    }
-    if (node->right)
-    {
-        findByKey(key, node->right);
-    }
-}
-
-template <typename V, typename K>
 typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key)
 {
     if (!_root)
         return 0;
-    return findByKey(key, _root);
+    return findNodeByKey(key, _root);
 }
 template <typename V, typename K>
 typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key, Node *node)
@@ -624,11 +601,11 @@ typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key, Node *node)
         throw std::out_of_range("there's no node with this key");
     if (node->left)
     {
-        findByKey(key, node->left);
+        findNodeByKey(key, node->left);
     }
     if (node->right)
     {
-        findByKey(key, node->right);
+        findNodeByKey(key, node->right);
     }
 }
 
@@ -687,23 +664,31 @@ bool RBTree<V,K>::isEmpty()
 template <typename V, typename K>
 void RBTree<V,K>::printTree()
 {
-    printTree(_root);
+    int level = 0;
+    printTree(_root, level);
 }
 
 template <typename V, typename K>
-void RBTree<V,K>::printTree(Node *node)
+void RBTree<V,K>::printTree(Node *node, int level)
 {
     if (isEmpty() == false)
     {
+        if (node->right)
+        {
+            printTree(node->right, level+1);
+        }
+        for (int i = 0; i < level; i++)
+        {
+            string l = "     ";
+            cout << l;
+            if (i%4 == 0)
+                l += l;
+        }
         cout << node->value << " " << node->key << " "
              << node->getNodeColor() << endl;
         if (node->left)
         {
-            printTree(node->left);
-        }
-        if (node->right)
-        {
-            printTree(node->right);
+            printTree(node->left, level+1);
         }
     }
 }
