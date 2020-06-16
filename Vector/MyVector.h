@@ -8,7 +8,6 @@
 
 #define ValueType double
 
-// стратегия изменения capacity
 enum class ResizeStrategy {
     Additive,
     Multiplicative
@@ -20,25 +19,24 @@ enum class SortedStrategy
     Decrease
 };
 
-
 class MyVector
 {
 public:
-    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
-    MyVector(size_t size, ValueType value = ValueType(), ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); //+
-
-    MyVector(const MyVector& copy);//+
+    MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f); 
+    MyVector(size_t size, ValueType value = ValueType(), ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f);
+    
+    MyVector(const MyVector& copy);
     MyVector& operator=(const MyVector& copy);
-
+    
     ~MyVector();
-
+    
     size_t capacity() const;
     size_t size() const;
     float loadFactor();
-
+    
     ValueType& operator[](const size_t i);//+
     const ValueType& operator[](const size_t i) const;
-
+    
     void pushBack(const ValueType& value);//+
     void pushFront(const ValueType& value);
     void insert(const size_t i, const ValueType& value);
@@ -51,38 +49,34 @@ public:
     void resize(const size_t size, const ValueType value = 0.0);
     void frameVector();
     void clear(); //+
-
-   // ValueType* begin();
-   // ValueType* end() const;
-//    class Iterator
-//    {
-//    public:
-//        Iterator(const Iterator &i): ptr(i.ptr) {}
-//        ValueType& operator*(){return *ptr;}
-//        ValueType* operator->(){return ptr;}
-//        Iterator& operator++(){ptr++; return ptr;}
-//        Iterator& operator--(){ptr--; return ptr;}
-//        bool operator==(const Iterator &i) {return ptr == i.ptr;}
-//        bool operator!=(const Iterator &i) {return ptr != i.ptr;}
-//        bool operator<(Iterator& b) { return ptr < b.ptr; };
-//        bool operator>(Iterator& b) { return ptr > b.ptr; };
-//    private:
-//        ValueType *ptr;
-//    };
-
-//    Iterator begin(){return this;};
-//    Iterator end(){return this->_data+this->_size;};
-
+    
+    class Iterator
+    {
+    public:
+        Iterator(ValueType *it): ptr(it) {}
+        ValueType& operator*(){return *ptr;}
+        ValueType* operator->(){return ptr;}
+        Iterator operator++ () { return ++ptr; }
+        Iterator operator-- () { return --ptr; }
+        bool operator==(const Iterator &i) {return ptr == i.ptr;}
+        bool operator!=(const Iterator &i) {return ptr != i.ptr;}
+        bool operator<(Iterator& b) { return ptr < b.ptr; };
+        bool operator>(Iterator& b) { return ptr > b.ptr; };
+    protected:
+        ValueType *ptr;
+    };
+    
+    Iterator begin(){return Iterator(_data);};
+    Iterator end(){return Iterator(_data+_size);};
+    
     MyVector sortedSquares(SortedStrategy = SortedStrategy::Increase);
-
+    
 private:
     ValueType* _data;
     size_t _size;
     size_t _capacity;
-    float _coef; //for multiplicative
+    float _coef; 
     ResizeStrategy _strategy;
 };
-
-
 
 #endif // VECTOR_H
