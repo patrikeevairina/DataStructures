@@ -1,15 +1,21 @@
 #pragma once
-#include <iostream>
 
-using ValueType = double;
+#include "StackImplementation.h"
+#include "LinkedList.h"
 
-class StackImplementation {
+class ListStack : public StackImplementation, public LinkedList
+{
 public:
-    virtual void push(const ValueType& value) = 0;
-    virtual void pop() = 0;
-    virtual ValueType& top() = 0;
-    virtual const ValueType& top() const = 0;
-    virtual bool isEmpty() const = 0;
-    virtual size_t size() const = 0;
-    virtual ~StackImplementation() {};
+    ListStack() {};
+    ListStack(const ListStack &copyList);
+    void push(const ValueType &value) override;
+    void pop() override;
+    ValueType& top() override;
+    const ValueType & top() const override;
+    bool isEmpty() const override;
+    size_t size() const override;
+
+    ~ListStack() override {};
 };
+
+
