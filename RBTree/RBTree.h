@@ -44,7 +44,7 @@ public:
     void removeFirstNode(K key);//удаление первой ноды по ключу
     void removeNodesByKey(K key);//удаление всех узлов с таким ключом
     
-    Node* findNodeByKey(K key);//найти ноду по ключу
+    V findNodeByKey(K key);//найти ноду по ключу
     V findMaxKey();//
     V findMinKey();//
     
@@ -81,9 +81,8 @@ private:
     void printTree(Node *nd, int level);//рекурсия для вывода дерева
     void removeTree(Node* nd);//рекурсия для деструктора
     void constructTree(Node* nd, Node *cp);//рекурсия для констр копирования
-    void moveTree(Node&& nd, Node&& cp);
     void removeFirstNode(K key, Node *nd);//рекурсия для удаления первой ноды с ключом key
-    Node* findNodeByKey(K key, Node *nd);//рекурсия для поиска ноды
+    V findNodeByKey(K key, Node *nd);//рекурсия для поиска ноды
 };
 
 template <typename V, typename K>
@@ -586,24 +585,23 @@ void RBTree<V,K>::leftRotate(Node *node)
 }
 
 template <typename V, typename K>
-typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key)
+V RBTree<V,K>::findNodeByKey(K key)
 {
-    if (!_root)
-        return 0;
     return findNodeByKey(key, _root);
 }
 template <typename V, typename K>
-typename RBTree<V,K>::Node* RBTree<V,K>::findNodeByKey(K key, Node *node)
+V RBTree<V,K>::findNodeByKey(K key, Node* node)
 {
-    if (node->key == key)
-        return node;
     if (!node)
-        throw std::out_of_range("there's no node with this key");
-    if (node->left)
+        throw std::out_of_range("no node");
+    else if (node->key == key)
+        return node->value;
+    
+    else if (node->key > key)
     {
         findNodeByKey(key, node->left);
     }
-    if (node->right)
+    else if (node->key < key)
     {
         findNodeByKey(key, node->right);
     }
@@ -681,7 +679,7 @@ void RBTree<V,K>::printTree(Node *node, int level)
         {
             string l = "     ";
             cout << l;
-            if (i%4 == 0)
+            if (i%10 == 0)
                 l += l;
         }
         cout << node->value << " " << node->key << " "
