@@ -1,12 +1,19 @@
 #pragma once
 #include "StackImplementation.h"
-class MyVector; // меняете на include вашего вектора
+#include "MyVector.h"
 
-// вариант с использованием ранее написанного вектора и множественного наследования
-// если бы вектор не был реализован, то было бы наследование только от интерфейса
-// множественное наследование можно заменить на композицию
 class VectorStack : public StackImplementation, public MyVector
 {
-	// вот тут вы вступаете в дело
+public:
+    VectorStack() {}
+    VectorStack(const VectorStack& copyVector);
+    void push(const ValueType &value) override;
+    void pop() override;
+    ValueType & top() override;
+    const ValueType & top() const override;
+    bool isEmpty() const override;
+    size_t size() const override;
+
+    ~VectorStack() override {};
 };
 
