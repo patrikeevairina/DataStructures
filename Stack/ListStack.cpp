@@ -1,6 +1,6 @@
 #pragma once
 #include "ListStack.h"
-
+/*
 ListStack::ListStack(const ListStack &copy) : LinkedList(copy) {}
 
 void ListStack::push(const ValueType &value)
@@ -37,3 +37,4 @@ size_t ListStack::size() const
 {
     return this->LinkedList::size();
 }
+*/
