@@ -3,7 +3,8 @@
 #include "StackImplementation.h"
 #include "LinkedList.h"
 
-class ListStack : public StackImplementation, public LinkedList
+template <typename ValueType>
+class ListStack : public StackImplementation<ValueType>, public LinkedList<ValueType>
 {
 public:
     ListStack() {};
@@ -17,5 +18,49 @@ public:
 
     ~ListStack() override {};
 };
+
+template <typename ValueType>
+ListStack<ValueType>::ListStack(const ListStack &copy) : LinkedList<ValueType>(copy) {}
+
+template <typename ValueType>
+void ListStack<ValueType>::push(const ValueType &value)
+{
+    this->pushFront(value);
+}
+
+template <typename ValueType>
+void ListStack<ValueType>::pop()
+{
+    if (isEmpty())
+        throw std::out_of_range("stack is empty");
+    this->removeFront();
+}
+
+template <typename ValueType>
+ValueType& ListStack<ValueType>::top()
+{
+    return LinkedList<ValueType>::getNode(0)->value;
+}
+
+template <typename ValueType>
+const ValueType& ListStack<ValueType>::top() const
+{
+    return LinkedList<ValueType>::getNode(0)->value;
+}
+
+template <typename ValueType>
+bool ListStack<ValueType>::isEmpty() const
+{
+    if (size() == 0)
+        return true;
+    else
+        return false;
+}
+
+template <typename ValueType>
+size_t ListStack<ValueType>::size() const
+{
+    return this->LinkedList<ValueType>::size();
+}
 
 
