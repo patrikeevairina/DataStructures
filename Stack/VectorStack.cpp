@@ -1,5 +1,5 @@
 #include "VectorStack.h"
-
+/*
 VectorStack::VectorStack(const VectorStack &copy) : MyVector(copy)
 {}
 
@@ -37,3 +37,4 @@ size_t VectorStack::size() const
 {
     return this->MyVector::size();
 }
+*/
