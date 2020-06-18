@@ -1,9 +1,9 @@
 #pragma once
 
 #include <iostream>
-#define ValueType double
+//#define ValueType double
 
-
+template <typename ValueType>
 class QueueImplementation
 {
 public:
