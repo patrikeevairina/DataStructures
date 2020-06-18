@@ -1,5 +1,6 @@
 #include "MyVector.h"
 
+/*
 MyVector::MyVector(size_t size, ResizeStrategy ResizeStrategy, float coef)
 {
     _size = size;
@@ -298,7 +299,7 @@ void MyVector::frameVector()
     }
     if (size() == 0)
         reserve(1);
-    
+
 }
 
 void MyVector::clear()
@@ -313,10 +314,10 @@ MyVector MyVector::sortedSquares(SortedStrategy strategy) // norm
     MyVector sorted = *this;
     size_t idx1 = 0;
     size_t idx2 = this->_size - 1;
-    
+
     for (size_t i = 0; i < this->_size ; i++)
     {
-        
+
         if (idx1 == idx2)
         {
             if (strategy == SortedStrategy::Increase)
@@ -324,10 +325,10 @@ MyVector MyVector::sortedSquares(SortedStrategy strategy) // norm
             else
                 sorted._data[i] = (this->_data[idx2])*(this->_data[idx2]);
         }
-        
+
         if (idx1 != idx2)
         {
-            
+
             if (abs(this->_data[idx1]) >= abs(this->_data[idx2]))
             {
                 if (strategy == SortedStrategy::Increase)
@@ -336,7 +337,7 @@ MyVector MyVector::sortedSquares(SortedStrategy strategy) // norm
                     sorted._data[i] = this->_data[idx1]*this->_data[idx1];
                 idx1++;
             }
-            else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))*/
+            else /*if (abs(vec._data[idx1]) < abs(vec._data[idx2]))
             {
                 if (strategy == SortedStrategy::Increase)
                     sorted._data[this->_size - i - 1] = (this->_data[idx2])*(this->_data[idx2]);
@@ -348,3 +349,4 @@ MyVector MyVector::sortedSquares(SortedStrategy strategy) // norm
     }
     return  sorted;
 }
+*/
