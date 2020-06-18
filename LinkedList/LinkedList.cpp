@@ -1,5 +1,5 @@
 #include "LinkedList.h"
-
+/*
 
 LinkedList::Node::Node(const ValueType& value, Node* next)
 {
@@ -291,3 +291,4 @@ void LinkedList::forceNodeDelete(Node* node)
     delete node;
     forceNodeDelete(nextDeleteNode);
 }
+*/
