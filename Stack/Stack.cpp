@@ -1,5 +1,5 @@
 #include "Stack.h"
-
+/*
 Stack::Stack(StackContainer container)
     : _containerType(container)
 {
@@ -138,3 +138,4 @@ size_t Stack::size() const
 {
     return _pimpl->size();
 }
+*/
