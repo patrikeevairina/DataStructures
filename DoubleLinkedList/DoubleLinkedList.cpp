@@ -1,6 +1,6 @@
 #include "DoubleLinkedList.h"
 #include <cassert>
-
+/*
 DoubleLinkedList::Node::Node(const ValueType& value, Node *next, Node *previous)
     :value(value), previous(previous), next(next) {};
 
@@ -287,4 +287,4 @@ void DoubleLinkedList::forceNodeDelete(Node *node)
     delete node;
     forceNodeDelete(nextDeleteNode);
 }
-
+*/
