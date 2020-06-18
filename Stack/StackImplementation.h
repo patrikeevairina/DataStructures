@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
 
-using ValueType = double;
+//using ValueType = double;
 
+template <typename ValueType>
 class StackImplementation {
 public:
     virtual void push(const ValueType& value) = 0;
